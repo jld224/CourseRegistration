@@ -1,6 +1,21 @@
 {
+  "name": "nextjs-app",
+  "version": "1.0.0",
+  "description": "My Next.js project",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
   "dependencies": {
     "mysql2": "^3.6.1",
+    "next": "^13.5.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "sequelize": "^6.33.0"
   }
 }
