@@ -1,15 +1,10 @@
-import Link from 'next/link'
+import Link from "next/link";
+import Footer from "../components/Footer.js";
 
 export default function Home() {
-    return (
-      <div>
-        <h1>Welcome to the Course Registration System</h1>
-        <p>Easily browse and register for your courses.</p>
-        <a href="/courses">View Courses</a>
-        <br/>
-        <Link href="/about">Go to About Page</Link>
-        <br/>
-        <Link href="/register">Go to About Page</Link>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <p>course registration</p>
+    </div>
+  );
+}
