@@ -5,7 +5,7 @@ export default function CourseList () {
   const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
-    fetch('/api/tester')
+    fetch('/api/courses')
       .then(response => response.json())
       .then(data => setCourses(data))
   }, [])

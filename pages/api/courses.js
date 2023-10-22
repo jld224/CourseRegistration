@@ -5,10 +5,10 @@ export default async function(req, res) {
         return res.status(405); // Method Not Allowed
     }
         
-    pool.query('SELECT * FROM courses', (error, results) => {
-        if (error) {
-            return res.status(500).json({ error: 'An error occurred when trying to fetch courses.' });
-        }
+    try {
+        const [results, fields] = await pool.query('SELECT * FROM courses');
         res.json(results);
-    });
+    } catch (error) {
+        return res.status(500).json({ error: 'An error occurred when trying to fetch courses.' });
+    }
 }
