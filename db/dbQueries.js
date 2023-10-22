@@ -10,6 +10,17 @@ const insertCourse = async (courseData) => {
   await pool.query(query, values);
 };
 
+// Remove a course from courses table by courseName
+const removeCourse = async (courseData) => {
+  const query = `
+    DELETE FROM courses
+    WHERE courseName = ?;
+  `;
+  const values = [courseData.courseName];
+  await pool.query(query, values);
+};
+
 module.exports = {
   insertCourse,
+  removeCourse
 };
