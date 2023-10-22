@@ -13,9 +13,9 @@ body {
 }
 
 a {
-  color: #0070f3;
   text-decoration: none;
   margin: 0 12px;
+  color: #333; /* Darker text color for better contrast */
 }
 
 a:hover {
@@ -33,6 +33,25 @@ img {
   padding: 0 1rem;
 }
 
+.navbar {
+  background-color: #f8f9fa;
+  padding: 10px 0;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar a {
+  color: #333;
+  padding: 10px 15px;
+  border-radius: 5px;
+  display: inline-flex;
+}
+
+.navbar a:hover {
+  background-color: #e2e6ea;
+}
+
 .button {
   background: #0070f3;
   color: #fff;
@@ -41,4 +60,26 @@ img {
 
 .menu-item {
   margin-left: 20px;
+}
+
+.hero {
+  text-align: center;
+  padding: 50px 0;
+  background: #f8f9fa;
+}
+
+.hero-title {
+  font-size: 2.5em;
+}
+
+.hero-description {
+  font-size: 1.2em;
+  margin: 20px 0;
+}
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  text-align: center;
 }
