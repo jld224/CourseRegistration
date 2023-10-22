@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 
 require('dotenv').config();
-const mysql2 = require('mysql2');
+const mysql2 = require('mysql2/promise');
 
 const pool  = mysql2.createPool({
   connectionLimit : 10,  // default = 10
