@@ -1,16 +1,13 @@
-import Navbar from '../components/Navbar';
-import { MantineProvider } from '@mantine/core';
-import '../styles/globals.css';
+import React from 'react';
+import '../styles/globals.css'; // Your global styles
+import Layout from '../components/Layout'; // Adjust the import path as needed
 
 function MyApp({ Component, pageProps }) {
   return (
-    <div>
-      <MantineProvider theme={{ colorScheme: 'dark' }}>
-        <Navbar />
-        <Component {...pageProps} />
-      </MantineProvider>
-    </div>
-  )
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  );
 }
 
 export default MyApp;

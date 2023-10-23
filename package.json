@@ -16,20 +16,23 @@
     "@storybook/react": "^7.4.6",
     "@tabler/core": "^1.0.0-beta20",
     "@tabler/icons-react": "^2.39.0",
+    "antd": "^5.10.2",
     "dotenv": "^16.3.1",
     "mysql2": "^3.6.2",
     "mysql2-promise": "^0.1.4",
     "next": "^13.5.3",
-    "postcss": "^8.4.31",
     "postcss-cli": "^10.1.0",
     "postcss-flexbugs-fixes": "^5.0.2",
-    "postcss-preset-mantine": "^1.9.0",
-    "postcss-simple-vars": "^7.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sequelize": "^6.33.0"
   },
   "devDependencies": {
-    "@types/node": "^20.8.7"
+    "@types/node": "^20.8.7",
+    "@types/react": "18.2.31",
+    "postcss": "^8.4.31",
+    "postcss-preset-mantine": "^1.9.0",
+    "postcss-simple-vars": "^7.0.1",
+    "typescript": "5.2.2"
   }
 }

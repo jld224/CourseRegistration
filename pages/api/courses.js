@@ -2,7 +2,7 @@ import pool from '../../db/db';
 
 export default async function(req, res) {
     if(req.method !== 'GET') {
-        return res.status(405); // Method Not Allowed
+        return res.status(405).send('Method Not Allowed'); 
     }
         
     try {
