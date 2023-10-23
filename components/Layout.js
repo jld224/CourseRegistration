@@ -4,7 +4,10 @@ import {
   MenuUnfoldOutlined,
   UploadOutlined,
   UserOutlined,
-  VideoCameraOutlined,
+  UnorderedListOutlined,
+  ClearOutlined,
+  SyncOutlined
+  
 } from '@ant-design/icons';
 import { Layout, Menu, Button, theme } from 'antd';
 import CustomFooter from './Footer'; 
@@ -39,7 +42,7 @@ const App = ({ children }) => {
             },
             {
               key: '2',
-              icon: <VideoCameraOutlined />,
+              icon: <UnorderedListOutlined />,
               label: (
                 <span>
                   <a href="/courses">Courses</a>
@@ -51,7 +54,25 @@ const App = ({ children }) => {
               icon: <UploadOutlined />,
               label: (
                 <span>
+                  <a href="/addCourse">Add Courses</a>
+                </span>
+              ),
+            },
+            {
+              key: '4',
+              icon: <ClearOutlined />,
+              label: (
+                <span>
                   <a href="/removeCourse">Remove Courses</a>
+                </span>
+              ),
+            },
+            {
+              key: '5',
+              icon: <SyncOutlined />,
+              label: (
+                <span>
+                  <a href="/update">Update Courses</a>
                 </span>
               ),
             },
