@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -7,86 +8,73 @@ import {
   UnorderedListOutlined,
   ClearOutlined,
   SyncOutlined
-  
 } from '@ant-design/icons';
 import { Layout, Menu, Button, theme } from 'antd';
-import CustomFooter from './Footer'; 
+import CustomFooter from './Footer';
 import Link from 'next/link';
 
 const { Header, Sider, Content } = Layout;
 
 const App = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+  const router = useRouter();
+
+  const menuItems = [
+    {
+      key: '/',
+      icon: <UserOutlined />,
+      label: 'Home',
+    },
+    {
+      key: '/courses',
+      icon: <UnorderedListOutlined />,
+      label: 'Courses',
+    },
+    {
+      key: '/addCourse',
+      icon: <UploadOutlined />,
+      label: 'Add Courses',
+    },
+    {
+      key: '/removeCourse',
+      icon: <ClearOutlined />,
+      label: 'Remove Courses',
+    },
+    {
+      key: '/update',
+      icon: <SyncOutlined />,
+      label: 'Update Courses',
+    },
+  ];
+
+  const { pathname } = router;
+  const activeMenu = pathname;
 
   return (
     <Layout>
-      <div className="main-content"></div>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="demo-logo-vertical" />
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={['1']}
-          items={[
-            {
-              key: '1',
-              icon: <UserOutlined />,
-              label: (
-                <span>
-                  <a href="/index">Home</a>
-                </span>
-              ),
-            },
-            {
-              key: '2',
-              icon: <UnorderedListOutlined />,
-              label: (
-                <span>
-                  <a href="/courses">Courses</a>
-                </span>
-              ),
-            },
-            {
-              key: '3',
-              icon: <UploadOutlined />,
-              label: (
-                <span>
-                  <a href="/addCourse">Add Courses</a>
-                </span>
-              ),
-            },
-            {
-              key: '4',
-              icon: <ClearOutlined />,
-              label: (
-                <span>
-                  <a href="/removeCourse">Remove Courses</a>
-                </span>
-              ),
-            },
-            {
-              key: '5',
-              icon: <SyncOutlined />,
-              label: (
-                <span>
-                  <a href="/update">Update Courses</a>
-                </span>
-              ),
-            },
-          ]}
-        />
+        <Menu theme="dark" mode="inline" selectedKeys={[activeMenu]}>
+          {menuItems.map((item) => (
+            <Menu.Item key={item.key} icon={item.icon}>
+              <Link href={item.key}>{item.label}</Link>
+            </Menu.Item>
+          ))}
+        </Menu>
       </Sider>
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }}>
+        <Header
+          style={{
+            padding: 0,
+            background: collapsed ? 'transparent' : '#fff',
+          }}
+        >
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!collapsed)}
             style={{
-              fontSize: '16px',
+              fontSize: collapsed ? '16px' : '18px',
               width: 64,
               height: 64,
             }}
@@ -96,7 +84,7 @@ const App = ({ children }) => {
           style={{
             margin: '24px 16px',
             padding: 24,
-            background: colorBgContainer,
+            minHeight: 280,
           }}
         >
           {children}

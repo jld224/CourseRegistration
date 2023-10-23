@@ -1,50 +1,107 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Input, Button, Form, Select, message, TimePicker, InputNumber } from 'antd';
+import fetch from 'isomorphic-unfetch'; // Install this package to use fetch in both client and server side
 
 export default function UpdateCourse() {
-  const [courseID, setCourseID] = useState(''); // New state for courseID
-  const [newCourseName, setNewCourseName] = useState(''); // New state for the updated courseName
+  const [courseData, setCourseData] = useState({ courseID: '', newCourseName: '' });
+  const [courses, setCourses] = useState([]); // New state to hold the list of courses
 
-  const handleCourseIDChange = (e) => {
-    setCourseID(e.target.value);
+  // useEffect hook to fetch course data when component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch('/api/courses');
+      const courses = await res.json(); // Assuming your api response contains json data
+      setCourses(courses);
+    };
+
+    fetchData();
+  }, []); // Empty dependency array means this effect runs once when the component mounts.
+
+  const handleChange = (value, option) => {
+    setCourseData({ ...courseData, courseID: value, newCourseName: option.children });
   };
 
   const handleNewCourseNameChange = (e) => {
-    setNewCourseName(e.target.value);
+    setCourseData({ ...courseData, newCourseName: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    if (!courseData.courseID || !courseData.newCourseName) {
+      message.error('Please select a course and enter a new course name');
+      return;
+    }
 
-    // Send a POST request to your API endpoint with courseID and newCourseName
-    const response = await fetch('/api/updateCourse', {
-      method: 'POST',
+    const response = await fetch(`/api/updateCourse/${courseData.courseID}`, {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ courseID, newCourseName })
+      body: JSON.stringify(courseData),
     });
 
-    // Handle the response here (e.g., show success or error message)
+    if (response.ok) {
+      message.success('Course updated successfully!');
+    } else {
+      message.error('An error occurred while updating the course. Please try again.');
+    }
   };
 
   return (
     <div>
       <h1>Update Course</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="courseID"
-          value={courseID}
-          onChange={handleCourseIDChange}
-          placeholder="Course ID"
-        />
-        <input
-          type="text"
-          name="newCourseName"
-          value={newCourseName}
-          onChange={handleNewCourseNameChange}
-          placeholder="New Course Name"
-        />
-        <button type="submit">Update Course</button>
-      </form>
+      <Form onFinish={handleSubmit}>
+        <Form.Item label="Select Course ID" name="courseID" rules={[{ required: true, message: 'Please select a course' }]}>
+          <Select placeholder="Select a course" onChange={handleChange}>
+            {/* Map through courses and return Select.Option for each */}
+            {courses.map((course) => (
+              <Select.Option key={course.courseID} value={course.courseID}>{course.courseName}</Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item label="New Course Name" name="newCourseName" rules={[{ required: true, message: 'Please enter a new course name' }]}>
+          <Input placeholder="New Course Name" onChange={handleNewCourseNameChange} />
+        </Form.Item>
+        <Form.Item label="Course Subject ID" name="courseSubjectID">
+          <Input onChange={(e) => handleChange('courseSubjectID', e.target.value)} />
+        </Form.Item>
+        <Form.Item label="Course Term" name="courseTerm">
+          <Input onChange={(e) => handleChange('courseTerm', e.target.value)} />
+        </Form.Item>
+        <Form.Item label="Course Start Time" name="courseStartTime">
+          <TimePicker format='HH:mm' onChange={(time, timeString) => handleChange('courseStartTime', timeString)} />
+        </Form.Item>
+        <Form.Item label="Course End Time" name="courseEndTime">
+          <TimePicker format='HH:mm' onChange={(time, timeString) => handleChange('courseEndTime', timeString)} />
+        </Form.Item>
+        <Form.Item label="Course Days Of Week" name="courseDaysOfWeek">
+          <Input onChange={(e) => handleChange('courseDaysOfWeek', e.target.value)} />
+        </Form.Item>
+        <Form.Item label="Course Room" name="courseRoom">
+          <Input onChange={(e) => handleChange('courseRoom', e.target.value)} />
+        </Form.Item>
+        <Form.Item label="Course Location" name="courseLocation">
+          <Input onChange={(e) => handleChange('courseLocation', e.target.value)} />
+        </Form.Item>
+        <Form.Item label="Course Instructor" name="courseInstructor">
+          <Input onChange={(e) => handleChange('courseInstructor', e.target.value)} />
+        </Form.Item>
+        <Form.Item label="Prerequisites" name="prerequisites">
+          <Input onChange={(e) => handleChange('prerequisites', e.target.value)} />
+        </Form.Item>
+        <Form.Item label="Corequisites" name="corequisites">
+          <Input onChange={(e) => handleChange('corequisites', e.target.value)} />
+        </Form.Item>
+        <Form.Item label="Course Seats" name="courseSeats">
+          <InputNumber min={0} onChange={(value) => handleChange('courseSeats', value)} />
+        </Form.Item>
+        <Form.Item label="Course Students" name="courseStudents">
+          <Input onChange={(e) => handleChange('courseStudents', e.target.value)} />
+        </Form.Item>
+        <Form.Item label="Course Wait List" name="courseWaitList">
+          <Input onChange={(e) => handleChange('courseWaitList', e.target.value)} />
+        </Form.Item>
+      </Form>
+      <Button type="primary" onClick={handleSubmit} htmlType="submit">
+        Update Course
+      </Button>
     </div>
   );
 }
