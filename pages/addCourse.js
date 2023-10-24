@@ -28,18 +28,27 @@ export default function AddCourse() {
     setCourseData(prevState => ({ ...prevState, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     // Call the API route to insert the data
     const response = await fetch('/api/insertCourse', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(courseData)
+     method: 'POST',
+     headers: { 'Content-Type': 'application/json' },
+     body: JSON.stringify(courseData)
     });
-
-    // Handle the response here (e.g., show success or error message)
-  };
+   
+    if(response.ok) { // If HTTP status code is 2xx
+     const jsonData = await response.json()
+   
+     // Assuming the response would have message on success
+     alert(jsonData.message || "Course successfully added!");
+   
+     // Clear form after successful submission
+     form.resetFields();
+    } else {
+     // If HTTP status code is other than 2xx
+     alert("Something went wrong! Please try again.")
+    }
+   };
 
   return (
     <div>
