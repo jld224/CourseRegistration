@@ -31,8 +31,28 @@ const removeCourse = async (courseData) => {
   await pool.query(query, values);
 };
 
+const verifyUserCredentials = async (email, password, userType) => {
+  const userTypeValue = userType.student ? 'Student' : userType.faculty ? 'Faculty' : null;
+  const query = `
+      SELECT * FROM users WHERE email = ? AND password = ? AND userType = ?;
+  `;
+  const [results] = await pool.query(query, [email, password, userTypeValue]);
+  return results.length > 0;
+};
+
+const registerUser = async (email, password, userType) => {
+  const userTypeValue = userType.student ? 'Student' : userType.faculty ? 'Faculty' : null;
+  const query = `
+      INSERT INTO users (email, password, userType) VALUES (?, ?, ?);
+  `;
+  const [results] = await pool.query(query, [email, password, userTypeValue]);
+  return results.affectedRows > 0;
+};
+
 module.exports = {
   insertCourse,
   updateCourse,
-  removeCourse
+  removeCourse,
+  verifyUserCredentials,
+  registerUser
 };

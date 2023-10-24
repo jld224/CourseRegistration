@@ -38,7 +38,10 @@ export default function AddCourse() {
       body: JSON.stringify(courseData)
     });
 
-    // Handle the response here (e.g., show success or error message)
+    if(response.status === 200)
+        message.success("Course removed successfully")
+    else
+        message.error("An error occurred removing course")
   };
 
   return (
