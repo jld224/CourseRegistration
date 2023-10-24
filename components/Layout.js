@@ -9,7 +9,7 @@ import {
   ClearOutlined,
   SyncOutlined
 } from '@ant-design/icons';
-import { Layout, Menu, Button, theme } from 'antd';
+import { Layout, Menu, Button, theme, Row, Col } from 'antd';
 import CustomFooter from './Footer';
 import Link from 'next/link';
 
@@ -65,20 +65,36 @@ const App = ({ children }) => {
       <Layout>
         <Header
           style={{
-            padding: 0,
+            padding: '0 16px',
             background: collapsed ? 'transparent' : '#fff',
           }}
         >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: collapsed ? '16px' : '18px',
-              width: 64,
-              height: 64,
-            }}
-          />
+          <Row justify="space-between" align="middle">
+            <Col>
+              <Button
+                type="text"
+                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                onClick={() => setCollapsed(!collapsed)}
+                style={{
+                  fontSize: collapsed ? '16px' : '18px',
+                  width: 64,
+                  height: 64,
+                }}
+              />
+            </Col>
+            <Col>
+              <Link href="/register">
+                <Button type="default" style={{ marginRight: '15px' }}>
+                  Register
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button type="default">
+                  Login
+                </Button>
+              </Link>
+            </Col>
+          </Row>
         </Header>
         <Content
           style={{
