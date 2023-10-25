@@ -11,17 +11,17 @@ export default function AddCourse() {
     courseTerm: '',
     courseStartTime: '',
     courseEndTime: '',
-    courseDaysOfWeek: '',
+    courseDaysOfWeek: null,  // changed to null
     courseRoom: '',
     courseLocation: '',
     courseCredits: '',
     courseCareer: '',
     courseInstructor: '',
-    prerequisites: '',
-    corequisites: '',
+    prerequisites: null,     // changed to null
+    corequisites: null,      // changed to null
     courseSeats: '',
-    courseStudents: '',
-    courseWaitList: ''
+    courseStudents: null,    // changed to null
+    courseWaitList: null     // changed to null
   });
 
   const handleChange = (name, value) => {
@@ -29,31 +29,34 @@ export default function AddCourse() {
   };
 
   const handleSubmit = async () => {
-    // Call the API route to insert the data
+    console.log('submitting form');
+  
     const response = await fetch('/api/insertCourse', {
-     method: 'POST',
-     headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify(courseData)
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(courseData)
     });
-   
-    if(response.ok) { // If HTTP status code is 2xx
-     const jsonData = await response.json()
-   
-     // Assuming the response would have message on success
-     alert(jsonData.message || "Course successfully added!");
-   
-     // Clear form after successful submission
-     form.resetFields();
+  
+    console.log('submitted form', response);
+    if (response.ok) { // If HTTP status code is 2xx
+      const jsonData = await response.json()
+    
+      // Assuming the response would have message on success
+      alert(jsonData.message || "Course successfully added!");
+    
+      // Clear form after successful submission
+      form.resetFields();
     } else {
-     // If HTTP status code is other than 2xx
-     alert("Something went wrong! Please try again.")
+      // If HTTP status code is other than 2xx
+      alert("Something went wrong! Please try again.")
     }
-   };
+  };
 
+  
   return (
     <div>
       <h1>Add New Course</h1>
-      <Form form={form} layout="vertical" onFinish={handleSubmit}>
+      <Form form={form} layout="vertical" onFinish={handleSubmit}  onSubmitCapture={handleSubmit}>
         <Form.Item label="Course ID" name="courseID" rules={[{ required: true }]}>
           <Input onChange={(e) => handleChange('courseID', e.target.value)} />
         </Form.Item>
@@ -61,10 +64,19 @@ export default function AddCourse() {
           <Input onChange={(e) => handleChange('courseName', e.target.value)} />
         </Form.Item>
         <Form.Item label="Course Subject ID" name="courseSubjectID">
-          <Input onChange={(e) => handleChange('courseSubjectID', e.target.value)} />
+        <Select onChange={(value) => handleChange('courseSubjectID', value)}>
+            {/* Options for the Select */}
+            <Select.Option value="Math">Math</Select.Option>
+            <Select.Option value="CPSC">Computer Science</Select.Option>
+            <Select.Option value="CISS">Computer Information Systems</Select.Option>
+          </Select>
         </Form.Item>
         <Form.Item label="Course Term" name="courseTerm" rules={[{ required: true }]}>
-          <Input onChange={(e) => handleChange('courseTerm', e.target.value)} />
+        <Select onChange={(value) => handleChange('courseTerm', value)}>
+            {/* Options for the Select */}
+            <Select.Option value="Spring">Spring</Select.Option>
+            <Select.Option value="Fall">Fall</Select.Option>
+          </Select>
         </Form.Item>
         <Form.Item label="Course Start Time" name="courseStartTime" rules={[{ required: true }]}>
           <TimePicker format='HH:mm' onChange={(time, timeString) => handleChange('courseStartTime', timeString)} />

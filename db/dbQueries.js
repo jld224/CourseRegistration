@@ -3,10 +3,10 @@ const pool = require('./db.js');
 // Insert a course into courses table
 const insertCourse = async (courseData) => {
   const query = `
-    INSERT INTO courses (courseID, courseName)
-    VALUES (?, ?);
+    INSERT INTO courses (courseID, courseName, courseSubjectID, courseTerm, courseStartTime, courseEndTime, courseDaysOfWeek, courseRoom, courseLocation, courseCredits, courseCareer, courseInstructor, prerequisites, corequisites, courseSeats, courseStudents, courseWaitList)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
   `;
-  const values = [courseData.courseID, courseData.courseName];
+  const values = [courseData.courseID, courseData.courseName, courseData.courseSubjectID, courseData.courseTerm, courseData.courseStartTime, courseData.courseEndTime, courseData.courseDaysOfWeek, courseData.courseRoom, courseData.courseLocation, courseData.courseCredits, courseData.courseCareer, courseData.courseInstructor, courseData.prerequisites, courseData.corequisites, courseData.courseSeats, courseData.courseStudents, courseData.courseWaitList];
   await pool.query(query, values);
 };
 
