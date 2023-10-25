@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Button, Form, Select, message, TimePicker, InputNumber } from 'antd';
-import fetch from 'isomorphic-unfetch'; // Install this package to use fetch in both client and server side
+import fetch from 'isomorphic-unfetch';
 
 export default function UpdateCourse() {
   const [courseData, setCourseData] = useState({ courseID: '', newCourseName: '' });
-  const [courses, setCourses] = useState([]); // New state to hold the list of courses
+  const [courses, setCourses] = useState([]);
 
-  // useEffect hook to fetch course data when component mounts
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch('/api/courses');
-      const courses = await res.json(); // Assuming your api response contains json data
+      const courses = await res.json();
       setCourses(courses);
     };
 
     fetchData();
-  }, []); // Empty dependency array means this effect runs once when the component mounts.
+  }, []);
 
   const handleChange = (value, option) => {
     setCourseData({ ...courseData, courseID: value, newCourseName: option.children });
@@ -31,7 +30,7 @@ export default function UpdateCourse() {
       return;
     }
 
-    const response = await fetch(`/api/updateCourse/${courseData.courseID}`, {
+    const response = await fetch(`/api/updateCourse`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(courseData),
@@ -52,7 +51,7 @@ export default function UpdateCourse() {
           <Select placeholder="Select a course" onChange={handleChange}>
             {/* Map through courses and return Select.Option for each */}
             {courses.map((course) => (
-              <Select.Option key={course.courseID} value={course.courseID}>{course.courseName}</Select.Option>
+              <Select.Option key={course.courseID} value={course.courseID}>{course.courseID}</Select.Option>
             ))}
           </Select>
         </Form.Item>
