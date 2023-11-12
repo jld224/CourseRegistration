@@ -49,10 +49,61 @@ const registerUser = async (email, password, userType) => {
   return results.affectedRows > 0;
 };
 
+const joinCourse = async (userID, courseID) => {
+  // Define queries
+  const updateStudentsQuery = `
+    UPDATE students
+    SET coursesTaking = JSON_ARRAY_APPEND(
+      IFNULL(
+        JSON_UNQUOTE(COALESCE(coursesTaking, '[]')),
+        '[]'
+      ),
+      '$',
+      ?
+    )
+    WHERE userID = ?;
+  `;
+
+  const updateCoursesQuery = `
+    UPDATE courses
+    SET courseStudents = JSON_ARRAY_APPEND(
+      IFNULL(
+        JSON_UNQUOTE(COALESCE(courseStudents, '[]')),
+        '[]'
+      ),
+      '$',
+      ?
+    )
+    WHERE courseID = ?;
+  `;
+
+  // Execute both queries in a transaction
+  const connection = await pool.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    // Update students table
+    await connection.query(updateStudentsQuery, [courseID, userID]);
+
+    // Add userID to courseStudents in courses table
+    await connection.query(updateCoursesQuery, [userID, courseID]);
+
+    await connection.commit();
+
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
 module.exports = {
   insertCourse,
   updateCourse,
   removeCourse,
   verifyUserCredentials,
-  registerUser
+  registerUser,
+  joinCourse
 };
