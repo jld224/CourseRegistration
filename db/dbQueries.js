@@ -99,11 +99,77 @@ const joinCourse = async (userID, courseID) => {
   }
 };
 
+const dropCourse = async (userID, courseID) => {
+  const deleteFromStudentsQuery = `
+    UPDATE students
+    SET coursesTaking = 
+      JSON_REMOVE(
+        IFNULL(
+          JSON_UNQUOTE(COALESCE(coursesTaking, '[]')),
+          '[]'
+        ),
+        JSON_UNQUOTE(JSON_SEARCH(
+          IFNULL(
+            JSON_UNQUOTE(COALESCE(coursesTaking, '[]')),
+            '[]'
+          ),
+          'one',
+          '${courseID}',
+          NULL,
+          '$[*]'
+        ))
+      )
+    WHERE userID = '${userID}';
+  `;
+
+  const deleteFromCoursesQuery = `
+    UPDATE courses
+    SET courseStudents = 
+      JSON_REMOVE(
+        IFNULL(
+          JSON_UNQUOTE(COALESCE(courseStudents, '[]')),
+          '[]'
+        ),
+        JSON_UNQUOTE(JSON_SEARCH(
+          IFNULL(
+            JSON_UNQUOTE(COALESCE(courseStudents, '[]')),
+            '[]'
+          ),
+          'one',
+          '${userID}',
+          NULL,
+          '$[*]'
+        ))
+      )
+    WHERE courseID = '${courseID}';
+  `;
+
+  const connection = await pool.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    // Remove userID from coursesTaking in students table
+    await connection.query(deleteFromStudentsQuery);
+
+    // Remove userID from courseStudents in courses table
+    await connection.query(deleteFromCoursesQuery);
+
+    await connection.commit();
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+};
+
 module.exports = {
   insertCourse,
   updateCourse,
   removeCourse,
   verifyUserCredentials,
   registerUser,
-  joinCourse
+  joinCourse,
+  dropCourse
 };
