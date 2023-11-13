@@ -1,6 +1,10 @@
 import { useState } from 'react';
+import React from 'react';
 import { Form, Input, Button, message, Spin } from 'antd';
 import { useRouter } from 'next/router';
+import LoginLayout from '../components/LoginLayout';
+
+LoginPage.Layout = LoginLayout;
 
 export default function LoginPage() {
   const router = useRouter();
@@ -40,6 +44,7 @@ export default function LoginPage() {
     }
   };
 
+
   return (
     <div>
       <h1>Login</h1>
@@ -60,4 +65,5 @@ export default function LoginPage() {
       {isLoading && <Spin />}
     </div>
   );
+
 }
