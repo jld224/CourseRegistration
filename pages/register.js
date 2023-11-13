@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Form, Input, Radio, Button, message, Spin } from 'antd';
-import { useHistory } from 'react-router-dom';
 
 export default function RegisterPage() {
     const [email, setEmail] = useState('');
