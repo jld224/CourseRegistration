@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Form, Input, Button, message, Spin } from 'antd';
 import { useRouter } from 'next/router';
+import LoginLayout from '../components/LoginLayout';
+
+LoginPage.Layout = LoginLayout;
 
 export default function LoginPage() {
   const router = useRouter();
