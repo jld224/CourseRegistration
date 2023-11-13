@@ -63,7 +63,7 @@ export default function AddCourse() {
         <Form.Item label="Course Name" name="courseName" rules={[{ required: true }]}>
           <Input onChange={(e) => handleChange('courseName', e.target.value)} />
         </Form.Item>
-        <Form.Item label="Course Subject ID" name="courseSubjectID">
+        <Form.Item label="Course Subject ID" name="courseSubjectID" rules={[{ required: true, message: 'Please select a subject ID' }]}>
         <Select onChange={(value) => handleChange('courseSubjectID', value)}>
             {/* Options for the Select */}
             <Select.Option value="Math">Math</Select.Option>
