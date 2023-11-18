@@ -1,14 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button, Typography } from 'antd'; // Import Ant Design components
-import CustomLayout from '../components/Layout';
+import StudentLayout from '../components/StudentLayout';
 
 const { Title, Paragraph } = Typography;
 
-const BasePage = () => (
+const StudentBasePage = () => (
   <div>
     <div className="hero" style={{ textAlign: 'center', paddingTop: '100px' }}>
-      <Title className="hero-title">Welcome to our Course Registration System</Title>
+      <Title className="hero-title">Welcome Students, to our Course Registration System</Title>
       <Paragraph className="hero-description">Join us and expand your knowledge.</Paragraph>
       <Link href="/courses">
         <Button type="primary">Browse Courses</Button>
@@ -25,4 +25,6 @@ const BasePage = () => (
   </div>
 );
 
-export default BasePage;
+StudentBasePage.Layout = StudentLayout; 
+
+export default StudentBasePage;
