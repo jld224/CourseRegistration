@@ -1,33 +1,38 @@
 import { useState } from 'react';
+import React from 'react';
 import { Form, Input, Radio, Button, message, Spin } from 'antd';
+import { useRouter } from 'next/router';
+import LoginLayout from '../components/LoginLayout';
+
+RegisterPage.Layout = LoginLayout;
 
 export default function RegisterPage() {
+    const router = useRouter();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [userType, setUserType] = useState(null);
     const [name, setName] = useState('');
     const [titleOrProgram, setTitleOrProgram] = useState('');
     const [department, setDepartment] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleRegister = async () => {
+        setIsLoading(true);
 
-        // set loading true
-        setLoading(true); 
-
-        if (!email.trim() || !password.trim() || !userType || !name.trim() || !titleOrProgram.trim() || (userType == 'Faculty' && !department.trim())) {
+        if (!email.trim() || !password.trim() || !userType || !name.trim() || !titleOrProgram.trim() || (userType === 'Faculty' && !department.trim())) {
             message.error("All fields must be completed.");
-            setLoading(false); // stop loading in case of error
+            setIsLoading(false);
             return;
         }
+
         const response = await fetch('/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password, userType, name, titleOrProgram, department })
         });
 
-        // set loading false in finally block to ensure it gets turned off whether the request is successful or not.
-        setLoading(false);
+        setIsLoading(false);
 
         if (!response.ok) {
             console.error('API request failed', response.status, response.statusText);
@@ -37,15 +42,11 @@ export default function RegisterPage() {
         const result = await response.json();
         if (result.success) {
             message.success('Registration successful!');
+            router.push('/login');
         } else {
             message.error(result.message);
         }
     };
-
-    // If loading is true, display a spin component.
-    if(loading) {
-        return <Spin/>
-    }
 
     return (
         <div>
@@ -67,24 +68,28 @@ export default function RegisterPage() {
                     <Input value={name} onChange={e => setName(e.target.value)} />
                 </Form.Item>
                 {userType === 'Student' && 
-                  <Form.Item label="Program" name="titleOrProgram" rules={[{ required: true, message: 'Program is required' }]} >
-                      <Input value={titleOrProgram} onChange={(e) => setTitleOrProgram(e.target.value)} />
-                  </Form.Item>
-                }
-                {userType === 'Faculty' &&
-                  <>
-                    <Form.Item label="Title" name="titleOrProgram" rules={[{ required: true, message: 'Title is required' }]} >
+                    <Form.Item label="Program" name="titleOrProgram" rules={[{ required: true, message: 'Program is required' }]} >
                         <Input value={titleOrProgram} onChange={(e) => setTitleOrProgram(e.target.value)} />
                     </Form.Item>
-                    <Form.Item label="Department" name="department" rules={[{ required: true, message: 'Department is required' }]} >
-                        <Input value={department} onChange={(e) => setDepartment(e.target.value)} />
-                    </Form.Item>
-                  </>
+                }
+                {userType === 'Faculty' &&
+                    <>
+                        <Form.Item label="Title" name="titleOrProgram" rules={[{ required: true, message: 'Title is required' }]} >
+                            <Input value={titleOrProgram} onChange={(e) => setTitleOrProgram(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item label="Department" name="department" rules={[{ required: true, message: 'Department is required' }]} >
+                            <Input value={department} onChange={(e) => setDepartment(e.target.value)} />
+                        </Form.Item>
+                    </>
                 }
                 <Form.Item>
-                    <Button type="primary" htmlType="submit">Register</Button>
+                    <Button type="primary" htmlType="submit" loading={isLoading}>
+                        Register
+                    </Button>
                 </Form.Item>
             </Form>
+    
+            {isLoading && <Spin />}
         </div>
-    );
+    );    
 }

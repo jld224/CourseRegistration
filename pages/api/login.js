@@ -6,19 +6,22 @@ export default async function(req, res) {
     return res.status(405).send({ error: 'Method Not Allowed' });
   }
 
-  const { email, password } = req.body;
+  const { email, password, userType } = req.body;
 
   // Verify that all fields are provided
-  if (!email || !password) {
+  if (!email || !password || !userType) {
     return res.status(400).json({ error: 'Missing necessary fields' });
   }
 
   try {
-    const [userResults] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    // Assuming userType is either 'Student' or 'Faculty'
+    const userTypeValue = userType === 'Student' ? 'Student' : 'Faculty';
+
+    const [userResults] = await pool.query('SELECT * FROM users WHERE email = ? AND userType = ?', [email, userTypeValue]);
 
     // Check if user exists
     if (userResults.length === 0) {
-      return res.status(404).json({ error: 'No user found with that email.' });
+      return res.status(404).json({ error: 'No user found with that email and user type.' });
     }
 
     const user = userResults[0];
@@ -34,7 +37,7 @@ export default async function(req, res) {
     return res.status(200).json({ success: true, message: 'Login successful!' });
 
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return res.status(500).json({ error: 'An error occurred during login.' });
   }
 }
