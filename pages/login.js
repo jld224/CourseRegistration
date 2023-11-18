@@ -38,7 +38,7 @@ export default function LoginPage() {
 
     if (result.success) {
       message.success('Logged in successfully!');
-      router.push('/');
+      router.push('/base');
     } else {
       message.error(result.message);
     }
