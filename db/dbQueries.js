@@ -50,44 +50,93 @@ const registerUser = async (email, password, userType) => {
 };
 
 const joinCourse = async (userID, courseID) => {
-  // Define queries
-  const updateStudentsQuery = `
+  const updateStudentsQueryWaitList = `
     UPDATE students
-    SET coursesTaking = JSON_ARRAY_APPEND(
-      IFNULL(
-        JSON_UNQUOTE(COALESCE(coursesTaking, '[]')),
-        '[]'
-      ),
-      '$',
-      ?
-    )
+    SET 
+      coursesWaiting = JSON_ARRAY_APPEND(
+        IFNULL(
+          JSON_UNQUOTE(COALESCE(coursesWaiting, '[]')),
+          '[]'
+        ),
+        '$',
+        ?
+      )
     WHERE userID = ?;
   `;
 
-  const updateCoursesQuery = `
-    UPDATE courses
-    SET courseStudents = JSON_ARRAY_APPEND(
-      IFNULL(
-        JSON_UNQUOTE(COALESCE(courseStudents, '[]')),
-        '[]'
-      ),
-      '$',
-      ?
-    )
+  const updateStudentsQueryNormal = `
+    UPDATE students
+    SET 
+      coursesTaking = JSON_ARRAY_APPEND(
+        IFNULL(
+          JSON_UNQUOTE(COALESCE(coursesTaking, '[]')),
+          '[]'
+        ),
+        '$',
+        ?
+      )
+    WHERE userID = ?;
+  `;
+
+  const getCourseInfoQuery = `
+    SELECT courseStudents, courseSeats, courseWaitList
+    FROM courses
     WHERE courseID = ?;
   `;
 
-  // Execute both queries in a transaction
+  const updateCoursesQueryWaitList = `
+    UPDATE courses
+    SET 
+      courseWaitList = JSON_ARRAY_APPEND(
+        IFNULL(
+          JSON_UNQUOTE(COALESCE(courseWaitList, '[]')),
+          '[]'
+        ),
+        '$',
+        ?
+      )
+    WHERE courseID = ?;
+  `;
+
+  const updateCoursesQueryNormal = `
+    UPDATE courses
+    SET 
+      courseStudents = JSON_ARRAY_APPEND(
+        IFNULL(
+          JSON_UNQUOTE(COALESCE(courseStudents, '[]')),
+          '[]'
+        ),
+        '$',
+        ?
+      )
+    WHERE courseID = ?;
+  `;
+
   const connection = await pool.getConnection();
 
   try {
     await connection.beginTransaction();
 
-    // Update students table
-    await connection.query(updateStudentsQuery, [courseID, userID]);
+    const courseInfo = await connection.query(getCourseInfoQuery, [courseID]);
+    const { courseStudents, courseSeats, courseWaitList } = courseInfo[0][0];
 
-    // Add userID to courseStudents in courses table
-    await connection.query(updateCoursesQuery, [userID, courseID]);
+    let numberOfStudents;
+
+    if (courseStudents === null) {
+      numberOfStudents = 0;
+    } else {
+      numberOfStudents = courseStudents.length;
+    }
+
+    if (numberOfStudents >= courseSeats) {
+      await connection.query(updateCoursesQueryWaitList, [userID, courseID]);
+      await connection.query(updateStudentsQueryWaitList, [courseID, userID]);
+    }
+
+    else {
+      await connection.query(updateCoursesQueryNormal, [userID, courseID]);
+      await connection.query(updateStudentsQueryNormal, [courseID, userID]);
+    }
 
     await connection.commit();
 
@@ -98,6 +147,7 @@ const joinCourse = async (userID, courseID) => {
     connection.release();
   }
 };
+
 
 const dropCourse = async (userID, courseID) => {
   const deleteFromStudentsQuery = `
