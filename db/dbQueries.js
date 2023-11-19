@@ -164,12 +164,12 @@ const dropCourse = async (userID, courseID) => {
             '[]'
           ),
           'one',
-          '${courseID}',
+          ?,
           NULL,
           '$[*]'
         ))
       )
-    WHERE userID = '${userID}';
+    WHERE userID = ?;
   `;
 
   const deleteFromCoursesQuery = `
@@ -186,12 +186,18 @@ const dropCourse = async (userID, courseID) => {
             '[]'
           ),
           'one',
-          '${userID}',
+          ?,
           NULL,
           '$[*]'
         ))
       )
-    WHERE courseID = '${courseID}';
+    WHERE courseID = ?;
+  `;
+
+  const getCourseWaitListQuery = `
+    SELECT JSON_UNQUOTE(JSON_EXTRACT(courseWaitList, '$[0]')) AS waitListedUser
+    FROM courses
+    WHERE courseID = ?;
   `;
 
   const connection = await pool.getConnection();
@@ -199,11 +205,78 @@ const dropCourse = async (userID, courseID) => {
   try {
     await connection.beginTransaction();
 
-    // Remove userID from coursesTaking in students table
-    await connection.query(deleteFromStudentsQuery);
+    const waitListedUser = await connection.query(getCourseWaitListQuery, [courseID]);
+    const waitListedUserID = waitListedUser[0][0].waitListedUser;
 
-    // Remove userID from courseStudents in courses table
-    await connection.query(deleteFromCoursesQuery);
+    const deleteFromCoursesAndStudentsQuery = `
+      UPDATE courses c
+      SET c.courseStudents = 
+        JSON_ARRAY_APPEND(
+          IFNULL(
+            JSON_UNQUOTE(COALESCE(c.courseStudents, '[]')),
+            '[]'
+          ),
+          '$',
+          ?
+        ),
+      c.courseWaitList = 
+        JSON_REMOVE(
+          IFNULL(
+            JSON_UNQUOTE(COALESCE(c.courseWaitList, '[]')),
+            '[]'
+          ),
+          JSON_UNQUOTE(JSON_SEARCH(
+            IFNULL(
+              JSON_UNQUOTE(COALESCE(c.courseWaitList, '[]')),
+              '[]'
+            ),
+            'one',
+            ?,
+            NULL,
+            '$[*]'
+          ))
+        )
+      WHERE c.courseID = ?;
+    `;
+
+    const moveFromWaitingToTakingQuery = `
+      UPDATE students s
+      SET s.coursesTaking = 
+        JSON_ARRAY_APPEND(
+          IFNULL(
+            JSON_UNQUOTE(COALESCE(s.coursesTaking, '[]')),
+            '[]'
+          ),
+          '$',
+          ?
+        ),
+      s.coursesWaiting = 
+        JSON_REMOVE(
+          IFNULL(
+            JSON_UNQUOTE(COALESCE(s.coursesWaiting, '[]')),
+            '[]'
+          ),
+          JSON_UNQUOTE(JSON_SEARCH(
+            IFNULL(
+              JSON_UNQUOTE(COALESCE(s.coursesWaiting, '[]')),
+              '[]'
+            ),
+            'one',
+            ?,
+            NULL,
+            '$[*]'
+          ))
+        )
+      WHERE s.userID = ?;
+    `;
+
+    await connection.query(deleteFromStudentsQuery, [courseID, userID]);
+    await connection.query(deleteFromCoursesQuery, [userID, courseID]);
+
+    if (waitListedUserID) {
+      await connection.query(deleteFromCoursesAndStudentsQuery, [waitListedUserID, waitListedUserID, courseID]);
+      await connection.query(moveFromWaitingToTakingQuery, [courseID, waitListedUserID, waitListedUserID]);
+    }
 
     await connection.commit();
   } catch (error) {
