@@ -287,6 +287,15 @@ const dropCourse = async (userID, courseID) => {
   }
 };
 
+const dragAndDrop = async () => {
+  const query = `
+    SELECT courseID, courseName, courseSubjectID, courseTerm, courseStartTime, courseEndTime
+    FROM courses;
+  `;
+  const [results] = await pool.query(query);
+  return results;
+};
+
 module.exports = {
   insertCourse,
   updateCourse,
@@ -294,5 +303,7 @@ module.exports = {
   verifyUserCredentials,
   registerUser,
   joinCourse,
-  dropCourse
+  dropCourse,
+  dragAndDrop
 };
+
