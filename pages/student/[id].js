@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react'
+import StudentLayout from '../../components/StudentLayout';
+
+Student.Layout = StudentLayout; 
 
 export default function Student({ studentId }) {
   const [student, setStudent] = useState(null);

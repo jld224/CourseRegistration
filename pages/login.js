@@ -39,9 +39,13 @@ export default function LoginPage() {
 
     if (result.success) {
       message.success('Logged in successfully!');
-      router.push(userType === 'Faculty' ? '/facultyBase' : '/studentBase');
-    } else {
-      message.error(result.message);
+      if (userType === 'Faculty') {
+        // Handle redirection for faculty users.
+        router.push('/facultyBase');
+      } else {
+        // Include the userId in the URL for students.
+        router.push(`/student/studentBasePage?id=${result.userId}`);
+      }
     }
   };
 

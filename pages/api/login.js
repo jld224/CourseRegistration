@@ -34,7 +34,11 @@ export default async function(req, res) {
     }
 
     // successful login
-    return res.status(200).json({ success: true, message: 'Login successful!' });
+    if (userType === 'Student') {
+      res.setHeader('Set-Cookie', [`studentId=${user.studentId}; Path=/; HttpOnly`]);
+    }
+    return res.status(200).json({ success: true, message: 'Login successful!', userType: userTypeValue, userId: user.id });
+    
 
   } catch (error) {
     console.error(error);

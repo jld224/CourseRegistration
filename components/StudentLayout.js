@@ -21,7 +21,7 @@ const StudentLayout = ({ children }) => {
 
   const menuItems = [
     {
-        key: '/studentBase',
+        key: '/student/studentBasePage',
         icon: <UserOutlined />,
         label: 'Home',
     },
@@ -29,6 +29,11 @@ const StudentLayout = ({ children }) => {
       key: '/courseRegister',
       icon: <SyncOutlined />,
       label: 'Course Register',
+    },
+    {
+      key: '/student/${studentId}',
+      icon: <SyncOutlined />,
+      label: 'Profile',
     },
   ];
 
