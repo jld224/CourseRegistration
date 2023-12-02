@@ -118,6 +118,18 @@ const joinCourse = async (userID, courseID) => {
     WHERE userID = ? AND JSON_SEARCH(coursesTaking, 'one', ?, NULL, '$[*]') IS NOT NULL;
   `;
 
+  const hasUserTakenCourseQuery = `
+    SELECT COUNT(*) AS count
+    FROM students
+    WHERE userID = ? AND JSON_SEARCH(coursesPassed, 'one', ?, NULL, '$[*]') IS NOT NULL;
+  `;
+
+  const isUserWaitingCourseQuery = `
+    SELECT COUNT(*) AS count
+    FROM students
+    WHERE userID = ? AND JSON_SEARCH(coursesWaiting, 'one', ?, NULL, '$[*]') IS NOT NULL;
+  `;
+
   const connection = await pool.getConnection();
 
   try {
@@ -128,6 +140,20 @@ const joinCourse = async (userID, courseID) => {
 
     if (isUserTakingCourse) {
       throw new Error('User is already taking the course.');
+    }
+
+    const hasUserTakenCourseResult = await connection.query(hasUserTakenCourseQuery, [userID, courseID]);
+    const hasUserTakenCourse = hasUserTakenCourseResult[0][0].count > 0;
+
+    if (hasUserTakenCourse) {
+      throw new Error('User has already passed the course.');
+    }
+
+    const isUserWaitingCourseResult = await connection.query(isUserWaitingCourseQuery, [userID, courseID]);
+    const isUserWaitingCourse = isUserWaitingCourseResult[0][0].count > 0;
+
+    if (isUserWaitingCourse) {
+      throw new Error('User is already in the waitlist for the course.');
     }
 
     const courseInfo = await connection.query(getCourseInfoQuery, [courseID]);
