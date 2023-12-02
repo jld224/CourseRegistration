@@ -93,6 +93,11 @@ const App = ({ children }) => {
                   Login
                 </Button>
               </Link>
+              <Link href="/logout">
+                <Button type="default">
+                  Logout
+                </Button>
+              </Link>
             </Col>
           </Row>
         </Header>
