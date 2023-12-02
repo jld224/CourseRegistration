@@ -11,7 +11,7 @@ const HomePage = () => (
       <Title className="hero-title">Welcome to our Course Registration System</Title>
       <Paragraph className="hero-description">Join us and expand your knowledge.</Paragraph>
       <Link href="/courses">
-        <Button type="primary">Browse Courses</Button>
+        <Button type="primary" style={{size:"large"}}>Browse Courses</Button>
       </Link>
     </div>
 
