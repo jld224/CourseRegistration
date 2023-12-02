@@ -147,6 +147,19 @@ const DragAndDrop = () => {
       return;
     }
 
+    // Validation for overlapping courses
+    const overlappingCourses = findOverlappingCourses(selectedCourses);
+    if (overlappingCourses.length > 0) {
+      const errorMessages = overlappingCourses.map((overlap) => {
+        const { courseName, courseDaysOfWeek, courseStartTime, courseEndTime } = overlap;
+        return `${courseName} has overlapping schedule on ${courseDaysOfWeek.join(', ')} from ${courseStartTime} to ${courseEndTime}`;
+      });
+
+      message.error(`Courses have overlapping schedules:\n${errorMessages.join('\n')}`);
+      return;
+    }
+
+    // Proceed with joining courses
     for (const selectedCourse of selectedCourses) {
       const response = await fetch('/api/joinCourse', {
         method: 'POST',
@@ -168,6 +181,42 @@ const DragAndDrop = () => {
       localizer.format(date, 'dddd', culture), // Format day without date number
     dayRangeHeaderFormat: ({ start, end }, culture, localizer) =>
       localizer.format(start, 'MMMM DD', culture), // Format date range without day number
+  };
+
+  const findOverlappingCourses = (courses) => {
+    const overlappingCourses = [];
+
+    for (let i = 0; i < courses.length - 1; i++) {
+      for (let j = i + 1; j < courses.length; j++) {
+        if (coursesOverlap(courses[i], courses[j])) {
+          overlappingCourses.push(courses[i], courses[j]);
+        }
+      }
+    }
+
+    return overlappingCourses;
+  };
+
+  // Helper function to check if two courses overlap
+  const coursesOverlap = (course1, course2) => {
+    // Check if courses have overlapping days and times
+    const daysOverlap = course1.courseDaysOfWeek.some((day) =>
+      course2.courseDaysOfWeek.includes(day)
+    );
+    
+    if (!daysOverlap) {
+      return false;
+    }
+
+    const start1 = moment(course1.courseStartTime, 'HH:mm');
+    const end1 = moment(course1.courseEndTime, 'HH:mm');
+    const start2 = moment(course2.courseStartTime, 'HH:mm');
+    const end2 = moment(course2.courseEndTime, 'HH:mm');
+
+    return (
+      (start1.isSameOrBefore(end2) && end1.isAfter(start2)) ||
+      (start2.isSameOrBefore(end1) && end2.isAfter(start1))
+    );
   };
 
   return (
