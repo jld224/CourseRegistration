@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Form, message } from 'antd';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const DragAndDrop = () => {
   const [courses, setCourses] = useState([]);
@@ -7,7 +10,9 @@ const DragAndDrop = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [userID, setUserID] = useState('');
-  const pageSize = 6; 
+  const [events, setEvents] = useState([]);
+  const pageSize = 6;
+  const localizer = momentLocalizer(moment);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -22,6 +27,33 @@ const DragAndDrop = () => {
 
     fetchCourses();
   }, []);
+
+  useEffect(() => {
+    const courseEvents = selectedCourses.flatMap((course) => {
+      const daysOfWeek = Array.isArray(course.courseDaysOfWeek)
+        ? course.courseDaysOfWeek
+        : [course.courseDaysOfWeek];
+  
+      return daysOfWeek.map((dayOfWeek) => {
+        const startDate = moment().day(dayOfWeek).set({
+          h: parseInt(course.courseStartTime.split(':')[0]),
+          m: parseInt(course.courseStartTime.split(':')[1]),
+        });
+        const endDate = moment().day(dayOfWeek).set({
+          h: parseInt(course.courseEndTime.split(':')[0]),
+          m: parseInt(course.courseEndTime.split(':')[1]),
+        });
+  
+        return {
+          title: course.courseName,
+          start: startDate.toDate(),
+          end: endDate.toDate(),
+        };
+      });
+    });
+  
+    setEvents(courseEvents);
+  }, [selectedCourses]);
 
   const formatTime = (time) => {
     const [hours, minutes] = time.split(':');
@@ -51,6 +83,11 @@ const DragAndDrop = () => {
       title: 'Course Term',
       dataIndex: 'courseTerm',
       key: 'courseTerm',
+    },
+    {
+      title: 'Days',
+      dataIndex: 'courseDaysOfWeek',
+      key: 'courseDaysOfWeek',
     },
     {
       title: 'Time',
@@ -126,6 +163,13 @@ const DragAndDrop = () => {
     message.success('Courses joined successfully.');
   };
 
+  const customFormats = {
+    dayFormat: (date, culture, localizer) =>
+      localizer.format(date, 'dddd', culture), // Format day without date number
+    dayRangeHeaderFormat: ({ start, end }, culture, localizer) =>
+      localizer.format(start, 'MMMM DD', culture), // Format date range without day number
+  };
+
   return (
     <div>
       <h1>Course Search</h1>
@@ -163,6 +207,22 @@ const DragAndDrop = () => {
           </Button>
         </Form.Item>
       </Form>
+      <style>{`
+        .rbc-current-time-indicator {
+          display: none !important;
+        }
+      `}</style>
+      <Calendar
+        localizer={localizer}
+        events={events}
+        startAccessor="start"
+        endAccessor="end"
+        defaultView="week"  // Set the default view to 'week'
+        views={['week']}  // Specify the available views
+        toolbar={false}
+        showCurrentTimeIndicator={false}
+        formats={customFormats}
+      />
     </div>
   );
 };

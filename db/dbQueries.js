@@ -289,7 +289,7 @@ const dropCourse = async (userID, courseID) => {
 
 const dragAndDrop = async () => {
   const query = `
-    SELECT courseID, courseName, courseSubjectID, courseTerm, courseStartTime, courseEndTime
+    SELECT courseID, courseName, courseSubjectID, courseTerm, courseStartTime, courseEndTime, courseDaysOfWeek
     FROM courses;
   `;
   const [results] = await pool.query(query);

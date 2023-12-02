@@ -19,6 +19,7 @@
     "@tabler/icons-react": "^2.39.0",
     "antd": "^5.10.2",
     "bcrypt": "^5.1.1",
+    "date-arithmetic": "^4.1.0",
     "dotenv": "^16.3.1",
     "isomorphic-unfetch": "^4.0.2",
     "moment": "^2.29.4",
@@ -31,6 +32,8 @@
     "postcss-cli": "^10.1.0",
     "postcss-flexbugs-fixes": "^5.0.2",
     "react": "^18.2.0",
+    "react-big-calendar": "^1.8.5",
+    "react-calendar": "^4.6.1",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.17.0",
     "sequelize": "^6.33.0"
