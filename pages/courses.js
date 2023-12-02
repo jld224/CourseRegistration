@@ -1,11 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import { Table, Tag, Space, Input } from 'antd';
 import Link from 'next/link';
+import HomeLayout from '../components/HomeLayout';
+
+const { Search } = Input;
 
 
-export default function CourseList () {
-  const [courses, setCourses] = useState([])
-  const [searchTerm, setSearchTerm] = useState('')
+// Adjusted naming to follow proper convention for component naming
+const HomePage = () => {
+  const [courses, setCourses] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetch('/api/courses')
@@ -15,59 +19,87 @@ export default function CourseList () {
         }
         return response.json();
       })
-      .then(courses => setCourses(courses))
+      .then(data => {
+        setCourses(data);
+      })
       .catch((error) => {
         console.error('Error:', error);
       });
-  }, [])
+  }, []);
 
-  function handleSearch(event) {
-    setSearchTerm(event.target.value)
-  }
+  // Filter courses based on search term
+  const filteredCourses = courses.filter(
+    (course) => course.courseName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const filteredCourses = courses.filter(course =>
-    course.courseName.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+  };
 
+  // Add sorter functions for the columns you want to be sortable
   const columns = [
     {
       title: 'Name',
       dataIndex: 'courseName',
       key: 'courseName',
-      render: (text, record) => (
-          <Link href={`/course/${record.courseID}`}>
-            {text}
-          </Link>
-      )
+      sorter: (a, b) => a.courseName.localeCompare(b.courseName),
+      render: text => <Link href={`/course/${text}`}>{text}</Link>,
     },
     {
       title: 'Subject Id',
       dataIndex: 'courseSubjectID',
       key: 'courseSubjectID',
+      sorter: (a, b) => a.courseSubjectID.localeCompare(b.courseSubjectID),
+      render: text => <Link href={`/course/${text}`}>{text}</Link>,
     },
     {
       title: 'Term Test',
       dataIndex: 'courseTerm',
       key: 'courseTerm',
+      sorter: (a, b) => a.courseTerm.localeCompare(b.courseTerm),
+      render: text => <Link href={`/course/${text}`}>{text}</Link>,
     },
     {
       title: 'Time',
       dataIndex: 'courseTime',
       key: 'courseTime',
+      sorter: (a, b) => a.courseStartTime.localeCompare(b.courseStartTime), // Assuming startTime is sortable
       render: (text, record) => (
         <span>
           {record.courseStartTime} - {record.courseEndTime}
         </span>
       ),
     },
-    /** You can add as many columns as you want. **/
+    // ... (add additional columns as needed)
   ];
-  
+
+
+  // Provide a rowKey function for the Table that returns a unique key for each row
+  const getRowKey = (record) => record.courseID;
+
   return (
-    <div>
-      <h1>Courses</h1>
-      <Input type="text" placeholder="Search by name" value={searchTerm} onChange={handleSearch} />
-      <Table columns={columns} dataSource={filteredCourses} rowKey="courseID" />
+    <div style={{ padding: '2rem' }}>
+      <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
+        <h1 style={{ fontSize: '2rem', textAlign: 'center' }}>Course List</h1>
+        <Search
+          placeholder="Search by name"
+          enterButton
+          size="large"
+          onSearch={handleSearch}
+        />
+      </Space>
+      <Table
+        columns={columns}
+        dataSource={filteredCourses}
+        rowKey={getRowKey}
+        bordered
+        pagination={{ pageSize: 10 }} // Adjust page size as needed
+        style={{ marginTop: '1rem' }}
+      />
     </div>
-  )
-}
+  );
+};
+
+HomePage.Layout = HomeLayout;
+
+export default HomePage;

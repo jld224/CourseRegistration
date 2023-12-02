@@ -2,6 +2,8 @@
 import React from 'react';
 import { Layout, Row, Col, Button } from 'antd';
 import Link from 'next/link'; // Make sure to import Link from 'next/link'
+import CustomFooter from './Footer';
+
 
 const { Header, Content } = Layout;
 
@@ -29,6 +31,7 @@ const HomeLayout = ({ children }) => {
           {children}
         </div>
       </Content>
+      <CustomFooter />
     </Layout>
   );
 };
