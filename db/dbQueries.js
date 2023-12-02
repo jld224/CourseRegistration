@@ -112,10 +112,23 @@ const joinCourse = async (userID, courseID) => {
     WHERE courseID = ?;
   `;
 
+  const isUserTakingCourseQuery = `
+    SELECT COUNT(*) AS count
+    FROM students
+    WHERE userID = ? AND JSON_SEARCH(coursesTaking, 'one', ?, NULL, '$[*]') IS NOT NULL;
+  `;
+
   const connection = await pool.getConnection();
 
   try {
     await connection.beginTransaction();
+
+    const isUserTakingCourseResult = await connection.query(isUserTakingCourseQuery, [userID, courseID]);
+    const isUserTakingCourse = isUserTakingCourseResult[0][0].count > 0;
+
+    if (isUserTakingCourse) {
+      throw new Error('User is already taking the course.');
+    }
 
     const courseInfo = await connection.query(getCourseInfoQuery, [courseID]);
     const { courseStudents, courseSeats, courseWaitList } = courseInfo[0][0];
