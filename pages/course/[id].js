@@ -1,22 +1,40 @@
 import { useEffect, useState } from 'react'
 
+HomePage.Layout = HomeLayout;
+
 export default function Course({ courseId }) {
-  const [course, setCourse] = useState(null)
+  const [course, setCourse] = useState(null);
 
   useEffect(() => {
+    console.log('Fetching course data for courseId:', courseId);
+
     fetch(`/api/courses/${courseId}`)
-      .then((response) => response.json()) // Parse the JSON response
-      .then((data) => {
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json(); // Parse the JSON response
+      })
+      .then(data => {
+        console.log('Received data:', data); // Log the received data
+
         if (data.error) {
-          // Handle error response
-          console.error(data.error)
+          // Handle potential error response from the API
+          console.error('API error:', data.error);
         } else {
           // Use course data if no length is undefined (a single object)
-          setCourse(Array.isArray(data) && data.length ? data[0] : data)
+          setCourse(Array.isArray(data) && data.length ? data[0] : data);
         }
       })
-      .catch((error) => console.error('Error:', error));
+      .catch(error => {
+        console.error('Error fetching course data:', error);
+      });
   }, [courseId]);
+
+  // Log the course state after it has been set
+  useEffect(() => {
+    console.log('Course state has been set:', course);
+  }, [course]);
 
   return (
     <div>
@@ -44,10 +62,11 @@ export default function Course({ courseId }) {
         <p>Loading course...</p> 
       )}
     </div>
-)
+  );
 }
 
 Course.getInitialProps = async ({ query }) => {
+  console.log('getInitialProps called with query:', query); // Log initial props query
   const { id } = query;
   return { courseId: id };
 }

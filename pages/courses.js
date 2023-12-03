@@ -39,6 +39,12 @@ const HomePage = () => {
   // Add sorter functions for the columns you want to be sortable
   const columns = [
     {
+      title: 'ID',
+      dataIndex: 'courseID',
+      key: 'courseID',
+      sorter: (a, b) => a.courseID.localeCompare(b.courseID),
+    },
+    {
       title: 'Name',
       dataIndex: 'courseName',
       key: 'courseName',
@@ -50,14 +56,12 @@ const HomePage = () => {
       dataIndex: 'courseSubjectID',
       key: 'courseSubjectID',
       sorter: (a, b) => a.courseSubjectID.localeCompare(b.courseSubjectID),
-      render: text => <Link href={`/course/${text}`}>{text}</Link>,
     },
     {
       title: 'Term Test',
       dataIndex: 'courseTerm',
       key: 'courseTerm',
       sorter: (a, b) => a.courseTerm.localeCompare(b.courseTerm),
-      render: text => <Link href={`/course/${text}`}>{text}</Link>,
     },
     {
       title: 'Time',
