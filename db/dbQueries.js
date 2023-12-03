@@ -130,14 +130,14 @@ const joinCourse = async (userID, courseID) => {
     WHERE userID = ? AND JSON_SEARCH(coursesWaiting, 'one', ?, NULL, '$[*]') IS NOT NULL;
   `;
 
-  const getCoursePrerequisitesQuery = `
-    SELECT prerequisites
+  const getCourseRequirementsQuery = `
+    SELECT prerequisites, corequisites
     FROM courses
     WHERE courseID = ?;
   `;
 
   const getStudentCoursesPassedQuery = `
-    SELECT coursesPassed
+    SELECT coursesPassed, coursesTaking
     FROM students
     WHERE userID = ?;
   `;
@@ -147,20 +147,28 @@ const joinCourse = async (userID, courseID) => {
   try {
     await connection.beginTransaction();
 
-    // Get the prerequisites for the selected course
-    const [coursePrerequisites] = await connection.query(getCoursePrerequisitesQuery, [courseID]);
-    const prerequisites = coursePrerequisites[0].prerequisites;
+    // Get the prerequisites and corequisites for the selected course
+    const [courseRequirements] = await connection.query(getCourseRequirementsQuery, [courseID]);
+    const prerequisites = courseRequirements[0].prerequisites;
+    const corequisites = courseRequirements[0].corequisites;
 
-    // Get the courses passed by the student
-    const [studentCoursesPassed] = await connection.query(getStudentCoursesPassedQuery, [userID]);
-    const coursesPassed = studentCoursesPassed[0].coursesPassed;
+    // Get the courses passed and taking by the student
+    const [studentCourses] = await connection.query(getStudentCoursesPassedQuery, [userID]);
+    const coursesPassed = studentCourses[0].coursesPassed;
+    const coursesTaking = studentCourses[0].coursesTaking;
 
-    // Check if prerequisites is null or the student has passed all prerequisites
+    // Check if prerequisites are null or the student has passed all prerequisites
     const hasPrerequisites = prerequisites === null || (prerequisites && coursesPassed &&
       prerequisites.every(prerequisite => coursesPassed.includes(prerequisite)));
 
-    if (!hasPrerequisites) {
-      throw new Error('Student does not meet the prerequisites for this course.');
+    // Check if corequisites are null or the student is taking or has taken all corequisites
+    const hasCorequisites = corequisites === null || (corequisites && (
+      corequisites.every(corequisite => coursesTaking && coursesTaking.includes(corequisite)) ||
+      corequisites.every(corequisite => coursesPassed && coursesPassed.includes(corequisite))
+    ));
+
+    if (!hasPrerequisites || !hasCorequisites) {
+      throw new Error('Student does not meet the prerequisites/corequisites for this course.');
     }
 
     const isUserTakingCourseResult = await connection.query(isUserTakingCourseQuery, [userID, courseID]);
