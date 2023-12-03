@@ -1,7 +1,6 @@
-// pages/studentProfile.js
-
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import StudentLayout from '../components/StudentLayout';
 
 export default function StudentProfile() {
   const router = useRouter();
@@ -9,10 +8,8 @@ export default function StudentProfile() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if userId is available
     const userId = localStorage.getItem('userId');
     if (!userId) {
-      // If not logged in, redirect to the login page or handle accordingly
       router.push('/login');
       return;
     }
@@ -24,20 +21,18 @@ export default function StudentProfile() {
         setProfile(data);
         setIsLoading(false);
       } else {
-        // Handle any errors
         console.error('Failed to fetch profile');
         setIsLoading(false);
       }
     };
 
     fetchProfile();
-  }, [router]); // Added router as a dependency
+  }, [router]);
 
   if (isLoading) {
     return <div>Loading profile...</div>;
   }
 
-  // If not logged in, you might not want to render the profile
   if (!profile) {
     return <div>No profile data.</div>;
   }
@@ -53,3 +48,5 @@ export default function StudentProfile() {
     </div>
   );
 }
+
+StudentProfile.Layout = StudentLayout;
