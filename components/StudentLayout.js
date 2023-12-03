@@ -35,6 +35,11 @@ const StudentLayout = ({ children }) => {
       icon: <SyncOutlined />,
       label: 'Profile',
     },
+    {
+      key: '/studentProfile',
+      icon: <SyncOutlined />,
+      label: 'Student Profile',
+    },
   ];
 
   const { pathname } = router;

@@ -32,16 +32,20 @@ export default function LoginPage() {
 
     if (!response.ok) {
       console.error('API request failed', response.status, response.statusText);
+      message.error('Failed to log in. Please check your credentials.');
       return;
     }
 
     const result = await response.json();
 
     if (result.success) {
+      localStorage.setItem('userId', result.userId);
+      console.log('UserID set in localStorage:', result.userId);
+
       message.success('Logged in successfully!');
       if (userType === 'Faculty') {
         // Handle redirection for faculty users.
-        router.push('/faculty/facultyBasePage?id=${result.userId}');
+        router.push(`/faculty/facultyBasePage?id=${result.userId}`);
       } else {
         // Include the userId in the URL for students.
         router.push(`/student/studentBasePage?id=${result.userId}`);
