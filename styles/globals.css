@@ -1,11 +1,17 @@
 html,
-body {
+body,
+#__next {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: 'Open Sans', sans-serif; /* Switch to a different font for a fresh look */
   line-height: 1.6;
-  font-size: 18px;
+  font-size: 16px; /* Slightly smaller font-size for a more modern look */
+  height: 100%;
+  background: #f0f2f5; /* Light grey background for entire app */
+}
+
+/* Ensure Ant Design components fill their containers */
+.ant-layout {
   height: 100%;
 }
 
@@ -16,11 +22,12 @@ body {
 a {
   text-decoration: none;
   margin: 0 12px;
-  color: #333; /* Darker text color for better contrast */
+  color: #1890ff; /* Ant Design's primary blue color for better integration */
 }
 
 a:hover {
   text-decoration: underline;
+  opacity: 0.8; /* Adds a slight interaction effect on hover */
 }
 
 img {
@@ -29,58 +36,71 @@ img {
 }
 
 .container {
-  max-width: 800px;
+  max-width: 1200px; /* Larger max-width for better use of space */
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 2rem; /* More padding for better spacing on larger screens */
 }
 
 .navbar {
-  background-color: #f8f9fa;
-  padding: 10px 0;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  background-color: #001529; /* Giving Navbar Ant Design's dark blue */
+  padding: 16px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soften the shadow for subtlety */
   display: flex;
   justify-content: space-between;
+  align-items: center; /* Vertically center items */
 }
 
 .navbar a {
-  color: #333;
-  padding: 10px 15px;
+  color: rgba(255, 255, 255, 0.65); /* Lighter text color for contrast */
+  padding: 0.5rem 1rem;
   border-radius: 5px;
-  display: inline-flex;
 }
 
 .navbar a:hover {
-  background-color: #e2e6ea;
+  background-color: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
 }
 
 .button {
-  background: #0070f3;
+  background: #1890ff; /* Align button colors with the theme */
   color: #fff;
-  padding: 1rem 2rem;
+  border: none; /* Remove border */
+  padding: 0.8rem 1.6rem;
+  border-radius: 4px; /* Rounded corners for buttons */
+  transition: all 0.3s ease; /* Smooth transition for interactions */
+}
+
+.button:hover {
+  background: #40a9ff; /* Lighter blue on hover */
 }
 
 .menu-item {
-  margin-left: 20px;
+  margin-left: 3rem; /* More spacing for desktop menu items */
 }
 
 .hero {
   text-align: center;
-  padding: 50px 0;
-  background: #f8f9fa;
+  padding: 100px 0; /* More vertical padding for a spacious hero section */
+  background: linear-gradient(135deg, #36d1dc, #5b86e5); /* Gradual background for vibrancy */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  color: #fff; /* White text color for contrast */
 }
 
 .hero-title {
-  font-size: 2.5em;
+  font-size: 3rem; /* Larger title for impact */
+  font-weight: 700; /* Bold font weight */
+  margin-bottom: 24px; /* More spacing below the title */
 }
 
 .hero-description {
-  font-size: 1.2em;
-  margin: 20px 0;
+  font-size: 1.1em;
+  margin: 24px 0 48px; /* More spacing around the description */
 }
 
 .content {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  text-align: center;
+  max-width: 1200px; /* Align with container width */
+  margin: 50px auto; /* More vertical margin for breathing room */
+  padding: 2rem; /* Padding on all sides */
+  background: #fff; /* White background for content card */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  border-radius: 8px; /* Rounded corners for the content card */
 }

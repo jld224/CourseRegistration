@@ -15,35 +15,25 @@ import Link from 'next/link';
 
 const { Header, Sider, Content } = Layout;
 
-const App = ({ children }) => {
+const StudentLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
 
   const menuItems = [
     {
-      key: '/facultyBase',
-      icon: <UserOutlined />,
-      label: 'Home',
+        key: '/student/studentBasePage',
+        icon: <UserOutlined />,
+        label: 'Home',
     },
     {
-      key: '/courses',
-      icon: <UnorderedListOutlined />,
-      label: 'Courses',
-    },
-    {
-      key: '/addCourse',
-      icon: <UploadOutlined />,
-      label: 'Add Courses',
-    },
-    {
-      key: '/removeCourse',
-      icon: <ClearOutlined />,
-      label: 'Remove Courses',
-    },
-    {
-      key: '/update',
+      key: '/courseRegister',
       icon: <SyncOutlined />,
-      label: 'Update Courses',
+      label: 'Course Register',
+    },
+    {
+      key: '/student/${studentId}',
+      icon: <SyncOutlined />,
+      label: 'Profile',
     },
   ];
 
@@ -116,4 +106,4 @@ const App = ({ children }) => {
   );
 };
 
-export default App;
+export default StudentLayout;
