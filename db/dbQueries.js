@@ -130,10 +130,38 @@ const joinCourse = async (userID, courseID) => {
     WHERE userID = ? AND JSON_SEARCH(coursesWaiting, 'one', ?, NULL, '$[*]') IS NOT NULL;
   `;
 
+  const getCoursePrerequisitesQuery = `
+    SELECT prerequisites
+    FROM courses
+    WHERE courseID = ?;
+  `;
+
+  const getStudentCoursesPassedQuery = `
+    SELECT coursesPassed
+    FROM students
+    WHERE userID = ?;
+  `;
+
   const connection = await pool.getConnection();
 
   try {
     await connection.beginTransaction();
+
+    // Get the prerequisites for the selected course
+    const [coursePrerequisites] = await connection.query(getCoursePrerequisitesQuery, [courseID]);
+    const prerequisites = coursePrerequisites[0].prerequisites;
+
+    // Get the courses passed by the student
+    const [studentCoursesPassed] = await connection.query(getStudentCoursesPassedQuery, [userID]);
+    const coursesPassed = studentCoursesPassed[0].coursesPassed;
+
+    // Check if prerequisites is null or the student has passed all prerequisites
+    const hasPrerequisites = prerequisites === null || (prerequisites && coursesPassed &&
+      prerequisites.every(prerequisite => coursesPassed.includes(prerequisite)));
+
+    if (!hasPrerequisites) {
+      throw new Error('Student does not meet the prerequisites for this course.');
+    }
 
     const isUserTakingCourseResult = await connection.query(isUserTakingCourseQuery, [userID, courseID]);
     const isUserTakingCourse = isUserTakingCourseResult[0][0].count > 0;
