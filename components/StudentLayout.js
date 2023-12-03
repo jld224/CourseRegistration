@@ -73,16 +73,6 @@ const StudentLayout = ({ children }) => {
               />
             </Col>
             <Col>
-              <Link href="/register">
-                <Button type="default" style={{ marginRight: '15px' }}>
-                  Register
-                </Button>
-              </Link>
-              <Link href="/login">
-                <Button type="default">
-                  Login
-                </Button>
-              </Link>
               <Link href="/logout">
                 <Button type="default">
                   Logout

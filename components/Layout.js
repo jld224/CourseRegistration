@@ -15,6 +15,7 @@ import Link from 'next/link';
 
 const { Header, Sider, Content } = Layout;
 
+//faculty base page
 const App = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
@@ -83,16 +84,6 @@ const App = ({ children }) => {
               />
             </Col>
             <Col>
-              <Link href="/register">
-                <Button type="default" style={{ marginRight: '15px' }}>
-                  Register
-                </Button>
-              </Link>
-              <Link href="/login">
-                <Button type="default">
-                  Login
-                </Button>
-              </Link>
               <Link href="/logout">
                 <Button type="default">
                   Logout
@@ -105,7 +96,7 @@ const App = ({ children }) => {
           style={{
             margin: '24px 16px',
             padding: 24,
-            minHeight: 280,
+            minHeight: '100vh',
           }}
         >
           {children}
