@@ -371,6 +371,15 @@ const dragAndDrop = async () => {
   return results;
 };
 
+export const getStudentProfile = async (userId) => {
+  try {
+    const [results] = await pool.query('SELECT * FROM students WHERE userID = ?', [userId]);
+    return results.length ? results[0] : null;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   insertCourse,
   updateCourse,
@@ -379,6 +388,6 @@ module.exports = {
   registerUser,
   joinCourse,
   dropCourse,
-  dragAndDrop
+  dragAndDrop,
+  getStudentProfile
 };
-

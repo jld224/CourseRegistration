@@ -26,14 +26,14 @@ const StudentLayout = ({ children }) => {
         label: 'Home',
     },
     {
-      key: '/courseRegister',
+      key: '/dragAndDrop',
       icon: <SyncOutlined />,
       label: 'Course Register',
     },
     {
-      key: '/student/${studentId}',
+      key: '/studentProfile',
       icon: <SyncOutlined />,
-      label: 'Profile',
+      label: 'Student Profile',
     },
   ];
 

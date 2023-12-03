@@ -9,10 +9,19 @@ const DragAndDrop = () => {
   const [searchText, setSearchText] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCourses, setSelectedCourses] = useState([]);
-  const [userID, setUserID] = useState('');
+  const [userId, setUserID] = useState('');
   const [events, setEvents] = useState([]);
   const pageSize = 6;
   const localizer = momentLocalizer(moment);
+
+  useEffect(() => {
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      setUserID(userId);
+    } else {
+      message.error('No userID found in storage. Please login.');
+    }
+  }, []);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -154,15 +163,10 @@ const DragAndDrop = () => {
       prevSelectedCourses.filter((course) => course.courseID !== courseToRemove.courseID)
     );
   };
-  
-
-  const handleUserIDChange = (e) => {
-    setUserID(e.target.value);
-  };
 
   const handleJoinCourse = async () => {
-    if (!userID) {
-      message.error('Please input your userID.');
+    if (!userId) {
+      message.error('Please login to get your userID.');
       return;
     }
 
@@ -183,7 +187,7 @@ const DragAndDrop = () => {
       const response = await fetch('/api/joinCourse', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userID, courseID: selectedCourse.courseID }),
+        body: JSON.stringify({ userId, courseID: selectedCourse.courseID }),
       });
 
       if (response.status !== 200) {
@@ -266,9 +270,6 @@ const DragAndDrop = () => {
         <Table dataSource={selectedCourses} columns={selectedColumns} />
       </div>
       <Form>
-        <Form.Item label="User ID" name="userID" rules={[{ required: true, message: 'Please input your userID' }]}>
-          <Input placeholder="User ID" value={userID} onChange={handleUserIDChange} />
-        </Form.Item>
         <Form.Item>
           <Button type="primary" onClick={handleJoinCourse}>
             Join Selected Courses
