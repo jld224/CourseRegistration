@@ -135,7 +135,26 @@ const DragAndDrop = () => {
       dataIndex: 'courseName',
       key: 'courseName',
     },
+    {
+      title: 'Actions',
+      dataIndex: 'actions',
+      key: 'actions',
+      width: 100, // Set the desired width
+      align: 'center', // Center the content
+      render: (text, record) => (
+        <Button type="danger" size="small" onClick={() => handleRemoveCourse(record)}>
+          Remove
+        </Button>
+      ),
+    },
   ];
+
+  const handleRemoveCourse = (courseToRemove) => {
+    setSelectedCourses((prevSelectedCourses) =>
+      prevSelectedCourses.filter((course) => course.courseID !== courseToRemove.courseID)
+    );
+  };
+  
 
   const handleUserIDChange = (e) => {
     setUserID(e.target.value);
