@@ -373,7 +373,7 @@ const dragAndDrop = async () => {
 
 export const getStudentProfile = async (userId) => {
   try {
-    const [results] = await pool.query('SELECT studentName, studentProgram FROM students WHERE userID = ?', [userId]);
+    const [results] = await pool.query('SELECT * FROM students WHERE userID = ?', [userId]);
     return results.length ? results[0] : null;
   } catch (error) {
     throw error;
