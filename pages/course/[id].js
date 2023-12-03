@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
+import HomeLayout from '../../components/HomeLayout';
 
-HomePage.Layout = HomeLayout;
+Course.Layout = HomeLayout;
 
 export default function Course({ courseId }) {
   const [course, setCourse] = useState(null);
