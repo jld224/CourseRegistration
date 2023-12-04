@@ -5,7 +5,6 @@ import HomeLayout from '../components/HomeLayout';
 
 const { Search } = Input;
 
-
 // Adjusted naming to follow proper convention for component naming
 const HomePage = () => {
   const [courses, setCourses] = useState([]);

@@ -29,7 +29,7 @@ const StudentBasePage = ({ studentId }) => { // Use studentId from props
       <div className="hero" style={{ textAlign: 'center', paddingTop: '100px' }}>
         <Title className="hero-title">Welcome Students, to our Course Registration System</Title>
         <Paragraph className="hero-description">Join us and expand your knowledge.</Paragraph>
-        <Link href="/courses">
+        <Link href="/coursesStudent">
           <Button type="primary">Browse Courses</Button>
         </Link>
       </div>

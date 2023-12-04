@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
   MenuFoldOutlined,
@@ -15,14 +15,31 @@ import Link from 'next/link';
 
 const { Header, Sider, Content } = Layout;
 
-//faculty base page
-const App = ({ children }) => {
+// Modified layout to handle user type
+const AppLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
+  
+  // State for user type and ID
+  const [userType, setUserType] = useState(null);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    // Retrieve user type from local storage at start and set state
+    const storedUserType = localStorage.getItem('userType');
+    const storedUserId = localStorage.getItem('userId');
+    setUserType(storedUserType);
+    setUserId(storedUserId);
+  }, []);
+
+  // Modify the home route based on the user type
+  const getHomeRoute = () => {
+    return `/faculty/facultyBasePage?id=${userId}`;
+  };
 
   const menuItems = [
     {
-      key: '/facultyBase',
+      key: getHomeRoute(),
       icon: <UserOutlined />,
       label: 'Home',
     },
@@ -55,13 +72,13 @@ const App = ({ children }) => {
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" mode="inline" selectedKeys={[activeMenu]}>
-          {menuItems.map((item) => (
-            <Menu.Item key={item.key} icon={item.icon}>
-              <Link href={item.key}>{item.label}</Link>
-            </Menu.Item>
-          ))}
-        </Menu>
+        <Menu theme="dark" mode="inline" selectedKeys={[router.pathname]}>
+        {menuItems.map((item) => (
+          <Menu.Item key={item.key} icon={item.icon}>
+            <Link href={item.key}>{item.label}</Link>
+          </Menu.Item>
+        ))}
+      </Menu>
       </Sider>
       <Layout>
         <Header
@@ -103,8 +120,8 @@ const App = ({ children }) => {
         </Content>
         <CustomFooter />
       </Layout>
-    </Layout>
+      </Layout>
   );
 };
 
-export default App;
+export default AppLayout;

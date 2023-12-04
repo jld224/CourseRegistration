@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
   MenuFoldOutlined,
@@ -18,12 +18,29 @@ const { Header, Sider, Content } = Layout;
 const StudentLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
+  
+  // State for user type and ID
+  const [userType, setUserType] = useState(null);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    // Retrieve user type from local storage at start and set state
+    const storedUserType = localStorage.getItem('userType');
+    const storedUserId = localStorage.getItem('userId');
+    setUserType(storedUserType);
+    setUserId(storedUserId);
+  }, []);
+
+  // Modify the home route based on the user type
+  const getHomeRoute = () => {
+    return `/student/studentBasePage?id=${userId}`;
+  };
 
   const menuItems = [
     {
-        key: '/student/studentBasePage',
-        icon: <UserOutlined />,
-        label: 'Home',
+      key: getHomeRoute(),
+      icon: <UserOutlined />,
+      label: 'Home',
     },
     {
       key: '/dragAndDrop',

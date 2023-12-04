@@ -3,6 +3,8 @@ import { Table, Input, Button, Form, message } from 'antd';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import StudentLayout from '../components/StudentLayout';
+
 
 const DragAndDrop = () => {
   const [courses, setCourses] = useState([]);
@@ -295,5 +297,7 @@ const DragAndDrop = () => {
     </div>
   );
 };
+
+DragAndDrop.Layout = StudentLayout;
 
 export default DragAndDrop;
