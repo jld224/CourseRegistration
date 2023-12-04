@@ -44,6 +44,11 @@ const AppLayout = ({ children }) => {
       label: 'Home',
     },
     {
+      key: '/facultyProfile',
+      icon: <SyncOutlined />,
+      label: 'Faculty Profile',
+    },
+    {
       key: '/courses',
       icon: <UnorderedListOutlined />,
       label: 'Courses',
