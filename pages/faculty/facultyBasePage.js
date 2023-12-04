@@ -1,73 +1,83 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Button, Typography, Spin } from 'antd';
-import CustomLayout from '../../components/Layout';
-import nookies from 'nookies';
+import { Typography, Spin, Row, Col, Card } from 'antd';
 
 const { Title, Paragraph } = Typography;
 
-const FacultyBasePage = ({ facultyId }) => {
-  const [faculty, setFaculty] = useState(null);
+const FacultyBasePage = () => {
+  const router = useRouter();
+  const [profile, setProfile] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch faculty info directly using the facultyId from props
-    if (facultyId) {
-      fetch(`/api/faculty/${facultyId}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.error) {
-            console.error(data.error)
-          } else {
-            setFaculty(Array.isArray(data) && data.length ? data[0] : data);
-          }
-        })
-        .catch(error => console.error('Error:', error));
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      router.push('/login');
+      return;
     }
-  }, [facultyId]);
+
+    const fetchProfile = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/facultyProfile?userId=${userId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setProfile(data);
+        } else {
+          throw new Error('Failed to fetch profile');
+        }
+      } catch (error) {
+        console.error(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [router]);
+
+  if (isLoading) {
+    return <Spin tip="Loading profile..." />;
+  }
+
+  if (!profile) {
+    return <div>No profile data.</div>;
+  }
 
   return (
-    <div>
-      <div className="hero" style={{ textAlign: 'center', paddingTop: '100px' }}>
-        <Title className="hero-title">Welcome Faculty, to our Course Registration System</Title>
-        <Paragraph className="hero-description">Join us and expand your knowledge.</Paragraph>
-        <Link href="/coursesFaculty">
-          <Button type="primary">Browse Courses</Button>
-        </Link>
-      </div>
+    <div className="faculty-container">
+      <Row justify="center" align="middle" className="hero">
+        <Col>
+          <Title>Welcome {profile.facultyName}, to our Course Registration System</Title>
+          <Paragraph>Join us and expand your knowledge.</Paragraph>
+        </Col>
+      </Row>
 
-      <div className="content" style={{ background: 'rgba(255, 255, 255, 0.8)', textAlign: 'center' }}>
-        {faculty ? (
-          <>
+      <Row justify="center">
+        <Col span={24} md={16} lg={12}>
+          <Card
+            bordered={false}
+            style={{ marginTop: '32px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
+          >
             <Title level={2}>Faculty Information</Title>
-            <Paragraph>Name: {faculty.name}</Paragraph>
-            <Paragraph>Email: {faculty.email}</Paragraph>
-            {}
-          </>
-        ) : (
-          <Spin size="large" />
-        )}
-      </div>
+            <Paragraph>
+              <strong>Name:</strong> {profile.facultyName}
+            </Paragraph>
+            <Paragraph>
+              <strong>Title:</strong> {profile.facultyTitle}
+            </Paragraph>
+            <Paragraph>
+              <strong>Department:</strong> {profile.facultyDepartment}
+            </Paragraph>
+            <Paragraph>
+              <strong>Courses:</strong> {profile.facultyCoursesTeaching}
+            </Paragraph>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };
-
-export async function getServerSideProps(context) {
-  // Get cookies from context
-  const cookies = nookies.get(context);
-  // Extract facultyId from cookies, or redirect to login if not found
-  const facultyId = cookies.facultyId; // This cookie should be set during faculty login
-
-  if (!facultyId) {
-    // Redirect to login if facultyId is not found
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
-  }
-
-  return { props: { facultyId } };
-}
 
 export default FacultyBasePage;

@@ -1,54 +1,76 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Button, Typography, Spin } from 'antd';
+import { Typography, Button, Card, Spin, Row, Col, Divider } from 'antd';
 import StudentLayout from '../../components/StudentLayout';
 import nookies from 'nookies';
 
 const { Title, Paragraph } = Typography;
 
-const StudentBasePage = ({ studentId }) => { // Use studentId from props
-  const [student, setStudent] = useState(null);
+const StudentBasePage = () => { // Use studentId from props
+  const router = useRouter();
+  const [profile, setProfile] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch student info directly using the studentId from props
-    fetch(`/api/students/${studentId}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.error) {
-          console.error(data.error)
-        } else {
-          setStudent(Array.isArray(data) && data.length ? data[0] : data);
-        }
-      })
-      .catch(error => console.error('Error:', error));
-  }, [studentId]);
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      router.push('/login');
+      return;
+    }
+
+    const fetchProfile = async () => {
+      const response = await fetch(`/api/studentProfile?userId=${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setProfile(data);
+        setIsLoading(false);
+      } else {
+        console.error('Failed to fetch profile');
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [router]);
+
+  if (isLoading) {
+    return <div>Loading profile...</div>;
+  }
+
+  if (!profile) {
+    return <div>No profile data.</div>;
+  }
 
   return (
     <>
-      <div className="hero" style={{ textAlign: 'center', paddingTop: '100px' }}>
-        <Title className="hero-title">Welcome Students, to our Course Registration System</Title>
-        <Paragraph className="hero-description">Join us and expand your knowledge.</Paragraph>
-        <Link href="/coursesStudent">
-          <Button type="primary">Browse Courses</Button>
-        </Link>
-      </div>
-
-      <div className="content" style={{ background: 'rgba(255, 255, 255, 0.8)', textAlign: 'center' }}>
-        {student ? (
-          <>
-            <Title level={2}>{student.studentName}</Title>
-            <Paragraph>Program: {student.studentProgram}</Paragraph>
-            <Paragraph>Courses Passed: {JSON.parse(student.coursesPassed || '[]').join(', ')}</Paragraph>
-            <Paragraph>Courses Taking: {JSON.parse(student.coursesTaking || '[]').join(', ')}</Paragraph>
-            <Paragraph>Courses Waiting: {JSON.parse(student.coursesWaiting || '[]').join(', ')}</Paragraph>
-            <Paragraph>ID: {student.userID}</Paragraph>
-            <Paragraph>name: {student.studentName}</Paragraph>
-          </>
-        ) : (
-          <Spin size="large" />
-        )}
-      </div>
+      <Row justify="center" align="middle" className="hero">
+        <Col>
+          <Title level={1} className="hero-title">Welcome {profile.studentName}, to our Course Registration System</Title>
+          <Paragraph className="hero-description">Join us and expand your knowledge.</Paragraph>
+          <Link href="/coursesStudent">
+            <Button type="primary" size="large">Browse Courses</Button>
+          </Link>
+        </Col>
+      </Row>
+  
+      <Row justify="center" className="content">
+        <Col span={24} md={16} lg={12}>
+          {profile ? (
+            <Card bordered={false} className="profile-card">
+              <Title level={2}>{profile.studentName}</Title>
+              <Divider />
+              <Paragraph><strong>Program:</strong> {profile.studentProgram}</Paragraph>
+              <Paragraph><strong>Courses Passed:</strong> {JSON.parse(profile.coursesPassed || '[]').join(', ')}</Paragraph>
+              <Paragraph><strong>Courses Taking:</strong> {JSON.parse(profile.coursesTaking || '[]').join(', ')}</Paragraph>
+              <Paragraph><strong>Courses Waiting:</strong> {JSON.parse(profile.coursesWaiting || '[]').join(', ')}</Paragraph>
+              <Paragraph><strong>ID:</strong> {profile.userID}</Paragraph>
+            </Card>
+          ) : (
+            <Spin size="large" />
+          )}
+        </Col>
+      </Row>
     </>
   );
 };
