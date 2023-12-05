@@ -45,6 +45,7 @@ const FacultyBasePage = () => {
     return <div>No profile data.</div>;
   }
 
+
   return (
     <div className="faculty-container">
       <Row justify="center" align="middle" className="hero">
@@ -72,7 +73,9 @@ const FacultyBasePage = () => {
             </Paragraph>
             <Paragraph>
               <strong>Courses:</strong>{' '}
-              {profile.facultyCoursesTeaching.join(', ')}
+              {Array.isArray(profile.facultyCoursesTeaching) && profile.facultyCoursesTeaching.length > 0
+                ? profile.facultyCoursesTeaching.join(', ')
+                : 'No courses listed'}
             </Paragraph>
             <Paragraph>
               <strong>ID:</strong> {profile.userID}
