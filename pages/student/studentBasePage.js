@@ -53,7 +53,7 @@ const StudentBasePage = () => { // Use studentId from props
           </Link>
         </Col>
       </Row>
-  
+
       <Row justify="center" className="content">
         <Col span={24} md={16} lg={12}>
           {profile ? (
@@ -61,9 +61,9 @@ const StudentBasePage = () => { // Use studentId from props
               <Title level={2}>{profile.studentName}</Title>
               <Divider />
               <Paragraph><strong>Program:</strong> {profile.studentProgram}</Paragraph>
-              <Paragraph><strong>Courses Passed:</strong> {JSON.parse(profile.coursesPassed || '[]').join(', ')}</Paragraph>
-              <Paragraph><strong>Courses Taking:</strong> {JSON.parse(profile.coursesTaking || '[]').join(', ')}</Paragraph>
-              <Paragraph><strong>Courses Waiting:</strong> {JSON.parse(profile.coursesWaiting || '[]').join(', ')}</Paragraph>
+              <Paragraph><strong>Currently Enrolled In:</strong> {profile.coursesTaking}</Paragraph>
+              <Paragraph><strong>Courses Passed:</strong> {profile.coursesPassed}</Paragraph>
+              <Paragraph><strong>Waitlist Courses:</strong> {profile.coursesWaiting}</Paragraph>
               <Paragraph><strong>ID:</strong> {profile.userID}</Paragraph>
             </Card>
           ) : (
@@ -76,24 +76,24 @@ const StudentBasePage = () => { // Use studentId from props
 };
 
 export async function getServerSideProps(context) {
-    // Get cookies from context
-    const cookies = nookies.get(context);
-    // Extract studentId from cookies, or redirect to login if not found
-    const studentId = cookies.studentId;
-  
-    if (!studentId) {
-      // Redirect to login if studentId is not found
-      return {
-        redirect: {
-          destination: '/login',
-          permanent: false,
-        },
-      };
-    }
-  
-    return { props: { studentId } };
+  // Get cookies from context
+  const cookies = nookies.get(context);
+  // Extract studentId from cookies, or redirect to login if not found
+  const studentId = cookies.studentId;
+
+  if (!studentId) {
+    // Redirect to login if studentId is not found
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
   }
-  
-  StudentBasePage.Layout = StudentLayout;
-  
-  export default StudentBasePage;
+
+  return { props: { studentId } };
+}
+
+StudentBasePage.Layout = StudentLayout;
+
+export default StudentBasePage;

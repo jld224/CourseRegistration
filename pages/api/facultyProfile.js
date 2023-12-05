@@ -11,6 +11,7 @@ export default async function(req, res) {
 
   try {
     const profile = await getFacultyProfile(userId);
+    console.log(profile);
     if (profile) {
       return res.status(200).json(profile);
     } else {

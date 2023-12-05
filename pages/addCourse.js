@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Input, Button, InputNumber, TimePicker, Select } from 'antd';
+import { Form, Input, Button, InputNumber, TimePicker, Select, message } from 'antd';
 import moment from 'moment';
 
 export default function AddCourse() {
@@ -29,26 +29,34 @@ export default function AddCourse() {
   };
 
   const handleSubmit = async () => {
-    console.log('submitting form');
+    try {
+      console.log('submitting form');
   
-    const response = await fetch('/api/insertCourse', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(courseData)
-    });
+      const response = await fetch('/api/insertCourse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(courseData)
+      });
   
-    console.log('submitted form', response);
-    if (response.ok) { // If HTTP status code is 2xx
-      const jsonData = await response.json()
-    
-      // Assuming the response would have message on success
-      alert(jsonData.message || "Course successfully added!");
-    
-      // Clear form after successful submission
-      form.resetFields();
-    } else {
-      // If HTTP status code is other than 2xx
-      alert("Something went wrong! Please try again.")
+      if (response.ok) { // If HTTP status code is 2xx
+        const jsonData = await response.json();
+        message.success(jsonData.message || "Course successfully added!");
+        form.resetFields();
+      } else {
+        // If HTTP status code is other than 2xx
+        const errorData = await response.json();
+        if (errorData.errno === 1062) {
+          // Handle the duplicate entry case with SQL error message
+          message.error(`An error occurred: ${errorData.sqlMessage}`);
+        } else {
+          // Handle other error types
+          message.error(errorData.message || "Failed to add the course. Please try again!");
+        }
+      }
+    } catch (error) {
+      // For network errors and other unforeseen issues
+      console.error('An unexpected error occurred:', error);
+      //message.error("An unexpected error occurred. Check your internet connection and try again.");
     }
   };
 

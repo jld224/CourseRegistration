@@ -73,6 +73,58 @@ const HomePage = () => {
         </span>
       ),
     },
+    {
+      title: 'Pre-requisite',
+      dataIndex: 'prerequisites',
+      key: 'prerequisites',
+      render: prerequisites => {
+        // Check if prerequisites is a string that needs to be parsed as JSON
+        if (typeof prerequisites === 'string') {
+          try {
+            const parsed = JSON.parse(prerequisites);
+            if (Array.isArray(parsed)) {
+              return parsed.join(', ');
+            }
+            return prerequisites; // Not an array, display as is
+          } catch {
+            return prerequisites; // Not JSON, display as is
+          }
+        }
+  
+        // If it's already an array, join it
+        if (Array.isArray(prerequisites)) {
+          return prerequisites.join(', ');
+        }
+  
+        // If prerequisites is null or another type, display an empty string or a default message
+        return '';
+      }
+    },
+    {
+      title: 'Co-requisite',
+      dataIndex: 'corequisites',
+      key: 'corequisites',
+      render: corequisites => {
+        // Follow the same pattern as for prerequisites
+        if (typeof corequisites === 'string') {
+          try {
+            const parsed = JSON.parse(corequisites);
+            if (Array.isArray(parsed)) {
+              return parsed.join(', ');
+            }
+            return corequisites;
+          } catch {
+            return corequisites;
+          }
+        }
+        
+        if (Array.isArray(corequisites)) {
+          return corequisites.join(', ');
+        }
+  
+        return '';
+      }
+    },
     // ... (add additional columns as needed)
   ];
 

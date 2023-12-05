@@ -71,7 +71,11 @@ const FacultyBasePage = () => {
               <strong>Department:</strong> {profile.facultyDepartment}
             </Paragraph>
             <Paragraph>
-              <strong>Courses:</strong> {profile.facultyCoursesTeaching}
+              <strong>Courses:</strong>{' '}
+              {profile.facultyCoursesTeaching.join(', ')}
+            </Paragraph>
+            <Paragraph>
+              <strong>ID:</strong> {profile.userID}
             </Paragraph>
           </Card>
         </Col>

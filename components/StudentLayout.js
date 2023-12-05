@@ -48,6 +48,11 @@ const StudentLayout = ({ children }) => {
       label: 'Student Profile',
     },
     {
+      key: '/coursesStudent',
+      icon: <UnorderedListOutlined />,
+      label: 'Courses',
+    },
+    {
       key: '/dragAndDrop',
       icon: <SyncOutlined />,
       label: 'Course Register',

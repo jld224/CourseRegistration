@@ -49,7 +49,7 @@ const AppLayout = ({ children }) => {
       label: 'Faculty Profile',
     },
     {
-      key: '/courses',
+      key: '/coursesFaculty',
       icon: <UnorderedListOutlined />,
       label: 'Courses',
     },

@@ -40,7 +40,7 @@ export default function FacultyProfile() {
     <div>
       <h1>Faculty Profile</h1>
       <p><strong>Name:</strong> {profile.facultyName}</p>
-      <p><strong>Title:</strong> {profile.studentTitle}</p>
+      <p><strong>Title:</strong> {profile.facultyTitle}</p>
       <p><strong>Department:</strong> {profile.facultyDepartment}</p>
       <p><strong>Courses:</strong> {profile.facultyCoursesTeaching}</p>
     </div>
