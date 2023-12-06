@@ -42,9 +42,9 @@ export default function StudentProfile() {
       <h1>Student Profile</h1>
       <p><strong>Name:</strong> {profile.studentName}</p>
       <p><strong>Program:</strong> {profile.studentProgram}</p>
-      <p><strong>Currently Enrolled In:</strong> {profile.coursesTaking}</p>
-      <p><strong>Courses Passed:</strong> {profile.coursesPassed}</p>
-      <p><strong>Waitlist Courses:</strong> {profile.coursesWaiting}</p>
+      <p><strong>Currently Enrolled In:</strong> {Array.isArray(profile.coursesTaking) ? profile.coursesTaking.join(', ') : ''}</p>
+      <p><strong>Courses Passed:</strong> {Array.isArray(profile.coursesPassed) ? profile.coursesPassed.join(', ') : ''}</p>
+      <p><strong>Waitlist Courses:</strong> {Array.isArray(profile.coursesWaiting) ? profile.coursesWaiting.join(', ') : ''}</p>
     </div>
   );
 }

@@ -61,9 +61,9 @@ const StudentBasePage = () => { // Use studentId from props
               <Title level={2}>{profile.studentName}</Title>
               <Divider />
               <Paragraph><strong>Program:</strong> {profile.studentProgram}</Paragraph>
-              <Paragraph><strong>Currently Enrolled In:</strong> {profile.coursesTaking}</Paragraph>
-              <Paragraph><strong>Courses Passed:</strong> {profile.coursesPassed}</Paragraph>
-              <Paragraph><strong>Waitlist Courses:</strong> {profile.coursesWaiting}</Paragraph>
+              <Paragraph><strong>Currently Enrolled In:</strong> {Array.isArray(profile.coursesTaking) ? profile.coursesTaking.join(', ') : ''}</Paragraph>
+              <Paragraph><strong>Courses Passed:</strong> {Array.isArray(profile.coursesPassed) ? profile.coursesPassed.join(', ') : ''}</Paragraph>
+              <Paragraph><strong>Waitlist Courses:</strong> {Array.isArray(profile.coursesWaiting) ? profile.coursesWaiting.join(', ') : ''}</Paragraph>
               <Paragraph><strong>ID:</strong> {profile.userID}</Paragraph>
             </Card>
           ) : (
