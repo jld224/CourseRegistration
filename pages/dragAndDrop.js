@@ -110,25 +110,22 @@ const DragAndDrop = () => {
       dataIndex: 'prerequisites',
       key: 'prerequisites',
       render: prerequisites => {
-        // Check if prerequisites is a string that needs to be parsed as JSON
         if (typeof prerequisites === 'string') {
           try {
             const parsed = JSON.parse(prerequisites);
             if (Array.isArray(parsed)) {
               return parsed.join(', ');
             }
-            return prerequisites; // Not an array, display as is
+            return prerequisites;
           } catch {
-            return prerequisites; // Not JSON, display as is
+            return prerequisites;
           }
         }
-  
-        // If it's already an array, join it
+
         if (Array.isArray(prerequisites)) {
           return prerequisites.join(', ');
         }
-  
-        // If prerequisites is null or another type, display an empty string or a default message
+
         return '';
       }
     },
@@ -137,7 +134,6 @@ const DragAndDrop = () => {
       dataIndex: 'corequisites',
       key: 'corequisites',
       render: corequisites => {
-        // Follow the same pattern as for prerequisites
         if (typeof corequisites === 'string') {
           try {
             const parsed = JSON.parse(corequisites);
@@ -202,8 +198,8 @@ const DragAndDrop = () => {
       title: 'Actions',
       dataIndex: 'actions',
       key: 'actions',
-      width: 100, // Set the desired width
-      align: 'center', // Center the content
+      width: 100, 
+      align: 'center',
       render: (text, record) => (
         <Button type="danger" size="small" onClick={() => handleRemoveCourse(record)}>
           Remove
@@ -224,7 +220,6 @@ const DragAndDrop = () => {
       return;
     }
 
-    // Validation for overlapping courses
     const overlappingCourses = findOverlappingCourses(selectedCourses);
     if (overlappingCourses.length > 0) {
       const errorMessages = overlappingCourses.map((overlap) => {
@@ -236,7 +231,6 @@ const DragAndDrop = () => {
       return;
     }
 
-    // Proceed with joining courses
     for (const selectedCourse of selectedCourses) {
       const response = await fetch('/api/joinCourse', {
         method: 'POST',
@@ -255,9 +249,9 @@ const DragAndDrop = () => {
 
   const customFormats = {
     dayFormat: (date, culture, localizer) =>
-      localizer.format(date, 'dddd', culture), // Format day without date number
+      localizer.format(date, 'dddd', culture), 
     dayRangeHeaderFormat: ({ start, end }, culture, localizer) =>
-      localizer.format(start, 'MMMM DD', culture), // Format date range without day number
+      localizer.format(start, 'MMMM DD', culture),
   };
 
   const findOverlappingCourses = (courses) => {
@@ -274,9 +268,7 @@ const DragAndDrop = () => {
     return overlappingCourses;
   };
 
-  // Helper function to check if two courses overlap
   const coursesOverlap = (course1, course2) => {
-    // Check if courses have overlapping days and times
     const daysOverlap = course1.courseDaysOfWeek.some((day) =>
       course2.courseDaysOfWeek.includes(day)
     );
@@ -340,8 +332,8 @@ const DragAndDrop = () => {
         events={events}
         startAccessor="start"
         endAccessor="end"
-        defaultView="week"  // Set the default view to 'week'
-        views={['week']}  // Specify the available views
+        defaultView="week"
+        views={['week']}
         toolbar={false}
         showCurrentTimeIndicator={false}
         formats={customFormats}

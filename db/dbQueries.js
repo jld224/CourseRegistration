@@ -147,12 +147,12 @@ const joinCourse = async (userID, courseID) => {
   try {
     await connection.beginTransaction();
 
-    // Get the prerequisites and corequisites for the selected course
+    // Get prerequisites and corequisites 
     const [courseRequirements] = await connection.query(getCourseRequirementsQuery, [courseID]);
     const prerequisites = courseRequirements[0].prerequisites;
     const corequisites = courseRequirements[0].corequisites;
 
-    // Get the courses passed and taking by the student
+    // Get courses passed and taking
     const [studentCourses] = await connection.query(getStudentCoursesPassedQuery, [userID]);
     const coursesPassed = studentCourses[0].coursesPassed;
     const coursesTaking = studentCourses[0].coursesTaking;
