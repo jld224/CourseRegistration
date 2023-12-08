@@ -157,15 +157,25 @@ const joinCourse = async (userID, courseID) => {
     const coursesPassed = studentCourses[0].coursesPassed;
     const coursesTaking = studentCourses[0].coursesTaking;
 
-    // Check if prerequisites are null or the student has passed all prerequisites
-    const hasPrerequisites = prerequisites === null || (prerequisites && coursesPassed &&
-      prerequisites.every(prerequisite => coursesPassed.includes(prerequisite)));
+    // Check if prerequisites are null or empty or the student has passed all prerequisites
+    const hasPrerequisites =
+      prerequisites === null ||
+      (prerequisites.length === 0) ||
+      (prerequisites &&
+        coursesPassed &&
+        prerequisites.every((prerequisite) => coursesPassed.includes(prerequisite)));
 
-    // Check if corequisites are null or the student is taking or has taken all corequisites
-    const hasCorequisites = corequisites === null || (corequisites && (
-      corequisites.every(corequisite => coursesTaking && coursesTaking.includes(corequisite)) ||
-      corequisites.every(corequisite => coursesPassed && coursesPassed.includes(corequisite))
-    ));
+    // Check if corequisites are null or empty or the student is taking or has taken all corequisites
+    const hasCorequisites =
+      corequisites === null ||
+      (corequisites.length === 0) ||
+      (corequisites &&
+        ((corequisites.every((corequisite) => coursesTaking && coursesTaking.includes(corequisite))) ||
+          corequisites.every((corequisite) => coursesPassed && coursesPassed.includes(corequisite))));
+
+    if (!hasPrerequisites || !hasCorequisites) {
+      throw new Error('Student does not meet the prerequisites/corequisites for this course.');
+    }
 
     if (!hasPrerequisites || !hasCorequisites) {
       throw new Error('Student does not meet the prerequisites/corequisites for this course.');
