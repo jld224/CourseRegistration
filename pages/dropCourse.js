@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Button, Form, Select, message } from 'antd';
+import StudentLayout from '../components/StudentLayout';
+
+DropCourse.Layout = StudentLayout;
 
 export default function DropCourse() {
   const [userID, setUserID] = useState('');
   const [courseID, setCourseID] = useState('');
-  const [courses, setCourses] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch('/api/courses');
-      const courses = await res.json();
-      setCourses(courses);
-    };
-
-    fetchData();
-  }, []);
 
   const handleUserIDChange = (e) => {
     setUserID(e.target.value);
@@ -38,8 +30,12 @@ export default function DropCourse() {
       body: JSON.stringify({ userID, courseID }),
     });
 
-    if (response.status === 200) message.success('Course dropped successfully');
-    else message.error('An error occurred dropping course');
+    if (response.status === 200) {
+      message.success('Course dropped successfully');
+      // Optionally, you may want to reset the form or perform additional actions
+    } else {
+      message.error('An error occurred dropping course');
+    }
   };
 
   return (
@@ -47,19 +43,13 @@ export default function DropCourse() {
       <h1>Drop Course from Student</h1>
       <Form onSubmit={handleSubmit}>
         <Form.Item label="User ID" name="userID" rules={[{ required: true, message: 'Please input user ID' }]}>
-          <Input placeholder="User ID" onChange={handleUserIDChange} />
+          <Input placeholder="User ID" value={userID} onChange={handleUserIDChange} />
         </Form.Item>
         <Form.Item label="Select Course ID" name="courseID" rules={[{ required: true, message: 'Please select a course' }]}>
-          <Select placeholder="Select a course" onChange={handleCourseIDChange}>
-            {/* Map through courses and return Select.Option for each */}
-            {courses.map((course) => (
-              <Select.Option key={course.courseID} value={course.courseID}>
-                {`${course.courseID} - ${course.courseName}`}
-              </Select.Option>
-            ))}
-          </Select>
+          <Input placeholder="Course ID" value={courseID} onChange={handleCourseIDChange}>
+            </Input>
         </Form.Item>
-        <Button type="primary" onClick={handleSubmit}>Drop Course!</Button>
+        <Button type="primary" htmlType="submit">Drop Course!</Button>
       </Form>
     </div>
   );
