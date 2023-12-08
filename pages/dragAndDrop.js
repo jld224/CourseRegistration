@@ -41,10 +41,14 @@ const DragAndDrop = () => {
 
   useEffect(() => {
     const courseEvents = selectedCourses.flatMap((course) => {
+      if (!course.courseDaysOfWeek || !course.courseStartTime || !course.courseEndTime) {
+        return [];
+      }
+    
       const daysOfWeek = Array.isArray(course.courseDaysOfWeek)
         ? course.courseDaysOfWeek
         : [course.courseDaysOfWeek];
-  
+    
       return daysOfWeek.map((dayOfWeek) => {
         const startDate = moment().day(dayOfWeek).set({
           h: parseInt(course.courseStartTime.split(':')[0]),
@@ -54,7 +58,7 @@ const DragAndDrop = () => {
           h: parseInt(course.courseEndTime.split(':')[0]),
           m: parseInt(course.courseEndTime.split(':')[1]),
         });
-  
+    
         return {
           title: course.courseName,
           start: startDate.toDate(),
@@ -62,7 +66,7 @@ const DragAndDrop = () => {
         };
       });
     });
-  
+    
     setEvents(courseEvents);
   }, [selectedCourses]);
 
@@ -181,7 +185,12 @@ const DragAndDrop = () => {
   const handleDrop = (e) => {
     e.preventDefault();
     const droppedCourse = JSON.parse(e.dataTransfer.getData('text/plain'));
-    setSelectedCourses((prevSelectedCourses) => [...prevSelectedCourses, droppedCourse]);
+
+    if (droppedCourse.courseDaysOfWeek && droppedCourse.courseStartTime && droppedCourse.courseEndTime) {
+      setSelectedCourses((prevSelectedCourses) => [...prevSelectedCourses, droppedCourse]);
+    } else {
+      setSelectedCourses((prevSelectedCourses) => [...prevSelectedCourses, droppedCourse]);
+    }
   };
 
   const handleDragOver = (e) => {
@@ -269,19 +278,28 @@ const DragAndDrop = () => {
   };
 
   const coursesOverlap = (course1, course2) => {
+    if (
+      !course1.courseDaysOfWeek ||
+      !Array.isArray(course1.courseDaysOfWeek) ||
+      !course2.courseDaysOfWeek ||
+      !Array.isArray(course2.courseDaysOfWeek)
+    ) {
+      return false;
+    }
+  
     const daysOverlap = course1.courseDaysOfWeek.some((day) =>
       course2.courseDaysOfWeek.includes(day)
     );
-    
+  
     if (!daysOverlap) {
       return false;
     }
-
+  
     const start1 = moment(course1.courseStartTime, 'HH:mm');
     const end1 = moment(course1.courseEndTime, 'HH:mm');
     const start2 = moment(course2.courseStartTime, 'HH:mm');
     const end2 = moment(course2.courseEndTime, 'HH:mm');
-
+  
     return (
       (start1.isSameOrBefore(end2) && end1.isAfter(start2)) ||
       (start2.isSameOrBefore(end1) && end2.isAfter(start1))
