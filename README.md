@@ -45,20 +45,6 @@ Make sure you have the following installed on your machine:
    ```
 You will have to host your own database, SQL file is included.
 
-### Database Setup
-
-1. Set up your database schema by running the migration scripts:
-
-   ```bash
-   npm run migrate
-   ```
-
-2. Optionally, seed the database with initial data:
-
-   ```bash
-   npm run seed
-   ```
-
 ### Running the Application
 
 1. Start the development server:
