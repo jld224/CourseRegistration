@@ -1,7 +1,7 @@
-Certainly! Below is a basic example of how you might structure the "Getting Started" section of your README using Markdown. Please replace placeholders with actual commands and information specific to your project:
 
-```markdown
 # Course Registration System 2.0
+
+##### Created by Jake Darida, Demyre Ramp, and Cody Bauer for Prof. Cheng's fall 2023 DBM Term project
 
 ## Getting Started
 
@@ -40,10 +40,10 @@ Make sure you have the following installed on your machine:
 1. Create a `.env` file in the root of the project:
 
    ```plaintext
-   # Replace these values with your actual configurations
    DATABASE_URL=your_database_url
    API_KEY=your_api_key
    ```
+You will have to host your own database, SQL file is included.
 
 ### Database Setup
 
@@ -75,10 +75,3 @@ Make sure you have the following installed on your machine:
 2. Explore the available functionalities such as course registration, search, and personal pages.
 3. Provide feedback or report issues by opening a new [issue](https://github.com/your-username/course-registration-system-2.0/issues).
 
-### Contributing
-
-If you would like to contribute to the project, follow our [contribution guidelines](CONTRIBUTING.md).
-
-### Created by
-
-### Jake Darida, Parker Ramp, and Cody Bauer
