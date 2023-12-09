@@ -29,6 +29,20 @@ export default function StudentProfile() {
     fetchProfile();
   }, [router]);
 
+  const handleDropCourse = async (courseID) => {
+    const userId = localStorage.getItem('userId');
+    const response = await fetch(`/api/dropCourse?userId=${userId}&courseID=${courseID}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setProfile(data);
+    } else {
+      console.error('Failed to drop course');
+    }
+  };
+
   if (isLoading) {
     return <div>Loading profile...</div>;
   }
@@ -42,7 +56,28 @@ export default function StudentProfile() {
       <h1>Student Profile</h1>
       <p><strong>Name:</strong> {profile.studentName}</p>
       <p><strong>Program:</strong> {profile.studentProgram}</p>
-      <p><strong>Currently Enrolled In:</strong> {Array.isArray(profile.coursesTaking) ? profile.coursesTaking.join(', ') : ''}</p>
+
+      <h2>Currently Enrolled Courses:</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Course ID</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Array.isArray(profile.coursesTaking) &&
+            profile.coursesTaking.map(courseID => (
+              <tr key={courseID}>
+                <td>{courseID}</td>
+                <td>
+                  <button onClick={() => handleDropCourse(courseID)}>Drop Course</button>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+
       <p><strong>Courses Passed:</strong> {Array.isArray(profile.coursesPassed) ? profile.coursesPassed.join(', ') : ''}</p>
       <p><strong>Waitlist Courses:</strong> {Array.isArray(profile.coursesWaiting) ? profile.coursesWaiting.join(', ') : ''}</p>
     </div>

@@ -370,6 +370,8 @@ const dropCourse = async (userID, courseID) => {
   } finally {
     connection.release();
   }
+  const updatedProfile = await getStudentProfile(userID);
+  return updatedProfile;
 };
 
 const dragAndDrop = async () => {
