@@ -59,5 +59,5 @@ You will have to host your own database, SQL file is included.
 
 1. Log in with your credentials or register a new account.
 2. Explore the available functionalities such as course registration, search, and personal pages.
-3. Provide feedback or report issues by opening a new [issue](https://github.com/your-username/course-registration-system-2.0/issues).
+3. Provide feedback or report issues by opening a new [issue](https://github.com/jld224/CourseRegistration/issues).
 
