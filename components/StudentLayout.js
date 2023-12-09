@@ -57,11 +57,6 @@ const StudentLayout = ({ children }) => {
       icon: <SyncOutlined />,
       label: 'Course Register',
     },
-    {
-      key: '/dropCourse',
-      icon: <ClearOutlined />,
-      label: 'Drop Course',
-    },
   ];
 
   const { pathname } = router;

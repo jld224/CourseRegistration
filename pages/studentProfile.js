@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { Button } from 'antd';
 import StudentLayout from '../components/StudentLayout';
 
 export default function StudentProfile() {
@@ -71,7 +72,9 @@ export default function StudentProfile() {
               <tr key={courseID}>
                 <td>{courseID}</td>
                 <td>
-                  <button onClick={() => handleDropCourse(courseID)}>Drop Course</button>
+                  <Button type="primary" onClick={() => handleDropCourse(courseID)}>
+                    Drop Course
+                  </Button>
                 </td>
               </tr>
             ))}
